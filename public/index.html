@@ -135,6 +135,20 @@ body{font-family:var(--serif);background:var(--paper);color:var(--ink);min-heigh
   display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;line-height:1.5}
 .cbadge{background:var(--amber);color:#fff;font-family:var(--mono);font-size:.56rem;
   padding:1px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.05em;flex-shrink:0}
+/* speak buttons */
+.speak-btns{display:flex;gap:3px;margin-left:auto;flex-shrink:0}
+.btn-speak{background:#fff;border:1px solid var(--border);border-radius:4px;
+  padding:2px 7px;font-size:.7rem;cursor:pointer;color:var(--muted);
+  transition:all .12s;white-space:nowrap;line-height:1.4}
+.btn-speak:hover{background:var(--acc-lt);color:var(--accent);border-color:var(--accent)}
+.btn-speak.fr-btn:hover{background:#eef4ff;color:#2255aa;border-color:#2255aa}
+.btn-speak.playing{animation:pulse-speak .6s ease infinite alternate}
+@keyframes pulse-speak{from{opacity:1}to{opacity:.5}}
+/* autoplay toggle */
+.autoplay-toggle{display:flex;align-items:center;gap:.5rem;margin-left:.5rem}
+.autoplay-toggle label{font-family:var(--mono);font-size:.62rem;color:var(--muted);
+  cursor:pointer;display:flex;align-items:center;gap:.3rem}
+.autoplay-toggle input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;cursor:pointer}
 .ex-row{display:flex;gap:.5rem}
 .ex-inp{flex:1;font-family:var(--mono);font-size:.85rem;padding:7px 10px;
   border:1.5px solid var(--border);border-radius:6px;background:var(--paper);
@@ -212,6 +226,176 @@ kbd{font-family:var(--mono);font-size:.72rem;background:#eee;
   .prac-score .sc-near{display:none}
   .topbar-sub{display:none}
 }
+
+/* ── SRS REVIEW ── */
+.due-banner{max-width:900px;margin:0 auto .8rem;
+  background:linear-gradient(135deg,#1a3a4a,#2c5f3d);
+  border-radius:10px;padding:1rem 1.2rem;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem}
+.due-banner-left{display:flex;align-items:center;gap:.8rem}
+.due-icon{font-size:1.6rem;line-height:1}
+.due-count{font-family:var(--mono);font-size:1.5rem;font-weight:bold;color:#fff}
+.due-label{font-family:var(--serif);font-size:.82rem;color:rgba(255,255,255,.7);font-style:italic}
+.btn-review-now{background:#fff;color:var(--accent);border:none;border-radius:8px;
+  padding:.55rem 1.3rem;font-family:var(--serif);font-style:italic;font-size:.9rem;
+  cursor:pointer;font-weight:bold;transition:all .12s}
+.btn-review-now:hover{background:var(--acc-lt);transform:scale(1.03)}
+.deck-footer{max-width:900px;margin:.6rem auto 0;
+  font-family:var(--mono);font-size:.6rem;color:var(--muted);text-align:right}
+
+/* review view */
+#view-review{max-width:680px;margin:0 auto;padding:1.2rem 1rem 3rem}
+.rev-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.rev-progress{flex:1;margin:0 1rem}
+.rev-prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:.3rem}
+.rev-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--acc-mid));transition:width .3s}
+.rev-prog-txt{font-family:var(--mono);font-size:.62rem;color:var(--muted);text-align:right}
+.rev-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.6rem 1.4rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.rev-card-label{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--muted);margin-bottom:.6rem}
+.rev-prompt{font-size:1.05rem;font-weight:500;line-height:1.6;margin-bottom:.9rem;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:.6rem;flex-wrap:wrap}
+.rev-prompt-text{flex:1}
+.rev-speak-btns{display:flex;gap:4px;flex-shrink:0;margin-top:2px}
+.rev-row{display:flex;gap:.5rem;margin-bottom:.6rem}
+.rev-inp{flex:1;font-family:var(--mono);font-size:.9rem;padding:9px 12px;
+  border:2px solid var(--border);border-radius:8px;background:var(--paper);
+  color:var(--ink);outline:none;transition:border-color .15s,background .15s}
+.rev-inp:focus{border-color:var(--accent);background:#fff}
+.rev-inp.ok  {border-color:var(--ok)  !important;background:#edf7ef!important}
+.rev-inp.near{border-color:var(--near)!important;background:#fdf8e8!important}
+.rev-inp.bad {border-color:var(--bad) !important;background:#fef2f2!important}
+.btn-rev-reveal{background:var(--accent);color:#fff;border:none;border-radius:8px;
+  padding:9px 18px;font-family:var(--mono);font-size:.74rem;letter-spacing:.04em;
+  cursor:pointer;transition:background .12s,transform .1s;flex-shrink:0}
+.btn-rev-reveal:hover{background:#1e4029}
+.btn-rev-reveal:disabled{background:#aaa;cursor:default}
+.rev-answer{background:var(--acc-lt);border:1px solid #b5d4c0;border-radius:8px;
+  padding:.7rem .9rem;margin-bottom:.9rem;display:none;
+  font-family:var(--mono);font-size:.88rem;font-weight:600;color:var(--accent)}
+.rev-answer-lbl{font-family:var(--mono);font-size:.56rem;text-transform:uppercase;
+  letter-spacing:.1em;color:#666;display:block;margin-bottom:.2rem}
+.rev-grade-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:.4rem}
+.btn-grade{border:none;border-radius:8px;padding:.65rem .5rem;
+  font-family:var(--mono);font-size:.72rem;font-weight:600;
+  cursor:pointer;transition:all .15s;display:flex;flex-direction:column;
+  align-items:center;gap:2px}
+.btn-grade .grade-interval{font-size:.55rem;opacity:.7;font-weight:normal}
+.btn-grade-again{background:#fef2f2;color:var(--bad);border:2px solid var(--bad)}
+.btn-grade-again:hover{background:var(--bad);color:#fff}
+.btn-grade-good {background:#edf7ef;color:var(--ok);border:2px solid var(--ok)}
+.btn-grade-good:hover{background:var(--ok);color:#fff}
+.btn-grade-easy {background:#eef4ff;color:#2255aa;border:2px solid #2255aa}
+.btn-grade-easy:hover{background:#2255aa;color:#fff}
+.btn-grade:disabled{opacity:.4;cursor:default;transform:none!important}
+.rev-card-meta{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem}
+.rev-meta-chip{font-family:var(--mono);font-size:.58rem;background:var(--paper);
+  border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--muted)}
+
+/* review completion */
+.rev-done{text-align:center;padding:3rem 1rem}
+.rev-done-icon{font-size:3rem;margin-bottom:.8rem}
+.rev-done-title{font-size:1.3rem;font-style:italic;font-weight:bold;margin-bottom:.4rem}
+.rev-done-sub{font-family:var(--mono);font-size:.74rem;color:var(--muted);
+  line-height:1.7;margin-bottom:1.4rem}
+.rev-done-btns{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap}
+.btn-home{background:var(--accent);color:#fff;border:none;border-radius:8px;
+  padding:.65rem 1.4rem;font-family:var(--serif);font-style:italic;font-size:.9rem;
+  cursor:pointer;transition:background .12s}
+.btn-home:hover{background:#1e4029}
+
+/* add-to-deck button in completion */
+.btn-add-deck{background:#fff;color:var(--ink);border:2px solid var(--accent);
+  border-radius:8px;padding:.65rem 1.4rem;font-family:var(--serif);font-style:italic;
+  font-size:.9rem;cursor:pointer;transition:all .12s}
+.btn-add-deck:hover{background:var(--acc-lt)}
+.btn-add-deck.added{background:var(--acc-lt);color:var(--accent);border-style:solid;cursor:default}
+
+/* track card deck badge */
+.tc-deck{font-family:var(--mono);font-size:.58rem;
+  background:#eef4ff;color:#2255aa;border:1px solid #b0c8f0;
+  border-radius:3px;padding:1px 5px;margin-left:auto}
+
+
+/* ── VOICE MODES ── */
+.mode-bar{display:flex;align-items:center;gap:.5rem;margin-bottom:.7rem;flex-wrap:wrap}
+.mode-bar-label{font-family:var(--mono);font-size:.6rem;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);margin-right:.2rem}
+.mode-btn{font-family:var(--mono);font-size:.72rem;padding:5px 12px;border-radius:6px;
+  border:1.5px solid var(--border);background:#fff;cursor:pointer;
+  transition:all .15s;display:flex;align-items:center;gap:.3rem}
+.mode-btn:hover{border-color:var(--accent);color:var(--accent)}
+.mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* mic button */
+.btn-mic{background:#fff;border:1.5px solid var(--border);border-radius:6px;
+  padding:7px 11px;font-size:.8rem;cursor:pointer;transition:all .15s;flex-shrink:0;
+  display:flex;align-items:center;gap:.3rem;font-family:var(--mono);font-size:.7rem}
+.btn-mic:hover{border-color:var(--bad);color:var(--bad)}
+.btn-mic.recording{background:var(--bad);color:#fff;border-color:var(--bad);
+  animation:mic-pulse .8s ease infinite alternate}
+.btn-mic:disabled{opacity:.35;cursor:default}
+@keyframes mic-pulse{from{box-shadow:0 0 0 0 rgba(168,50,50,.5)}
+  to{box-shadow:0 0 0 6px rgba(168,50,50,0)}}
+
+/* listen-mode card overrides */
+.ex.listen-mode .ex-en-text{display:none}
+.ex.listen-mode .ex-en-text.revealed{display:inline}
+.listen-play-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem;flex-wrap:wrap}
+.btn-listen-play{background:var(--ink);color:#fff;border:none;border-radius:8px;
+  padding:.5rem 1.1rem;font-size:.8rem;cursor:pointer;display:flex;align-items:center;
+  gap:.4rem;transition:background .12s;font-family:var(--mono)}
+.btn-listen-play:hover{background:#2d2d2a}
+.btn-listen-play.playing{background:var(--accent)}
+.btn-reveal-en{background:#fff;border:1.5px solid var(--border);border-radius:6px;
+  padding:.4rem .9rem;font-family:var(--mono);font-size:.68rem;cursor:pointer;
+  transition:all .12s}
+.btn-reveal-en:hover{background:var(--paper);border-color:var(--accent);color:var(--accent)}
+.btn-reveal-en.done{opacity:.4;cursor:default}
+.en-tag{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--muted);background:var(--paper);
+  border:1px solid var(--border);border-radius:3px;padding:1px 5px}
+
+/* shadow view */
+#view-shadow{max-width:680px;margin:0 auto;padding:1.2rem 1rem 3rem}
+.shadow-card{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.6rem 1.4rem;box-shadow:var(--shadow)}
+.shadow-stage{display:flex;flex-direction:column;gap:1rem}
+.shadow-listen-row{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}
+.btn-shadow-play{background:var(--ink);color:#fff;border:none;border-radius:8px;
+  padding:.65rem 1.4rem;font-family:var(--mono);font-size:.8rem;cursor:pointer;
+  transition:all .12s;display:flex;align-items:center;gap:.5rem}
+.btn-shadow-play:hover{background:#333}
+.btn-shadow-play.playing{background:var(--accent)}
+.shadow-transcript{background:var(--paper);border:1px solid var(--border);border-radius:8px;
+  padding:.7rem .9rem;font-family:var(--mono);font-size:.84rem;min-height:2.4rem;
+  display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.shadow-transcript-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);flex-shrink:0}
+.shadow-transcript-text{color:var(--ink);flex:1}
+.shadow-transcript-text.empty{color:var(--muted);font-style:italic}
+.shadow-answer-row{background:var(--acc-lt);border:1px solid #b5d4c0;border-radius:8px;
+  padding:.6rem .9rem;display:none;font-family:var(--mono);font-size:.84rem;
+  align-items:center;gap:.5rem}
+.shadow-answer-row.show{display:flex}
+.shadow-answer-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;
+  color:#666;flex-shrink:0}
+.shadow-compare{flex:1;display:flex;flex-direction:column;gap:.2rem}
+.shadow-correct{font-weight:600;color:var(--accent)}
+.shadow-yours{font-size:.76rem;color:var(--muted)}
+.shadow-match{font-size:.72rem;font-weight:600}
+.shadow-match.ok{color:var(--ok)}.shadow-match.near{color:var(--near)}.shadow-match.bad{color:var(--bad)}
+.shadow-grade-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}
+.shadow-info{display:flex;gap:.5rem;flex-wrap:wrap}
+.shadow-chip{font-family:var(--mono);font-size:.58rem;background:var(--paper);
+  border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--muted)}
+.shadow-done{text-align:center;padding:2.5rem 1rem}
+.shadow-done-icon{font-size:2.5rem;margin-bottom:.6rem}
+.shadow-done-title{font-size:1.2rem;font-style:italic;font-weight:bold;margin-bottom:.3rem}
+.shadow-done-sub{font-family:var(--mono);font-size:.72rem;color:var(--muted);
+  margin-bottom:1.2rem;line-height:1.7}
+
 </style>
 </head>
 <body>
@@ -234,6 +418,16 @@ kbd{font-family:var(--mono);font-size:.72rem;background:#eee;
   <div class="home-header">
     <h1>Introduction to French</h1>
     <p>Follow each track: read the lesson, then practise. Your scores are saved locally.</p>
+  </div>
+  <div id="due-banner" class="due-banner" style="display:none;cursor:pointer" onclick="startReview()">
+    <div class="due-banner-left">
+      <span class="due-icon">🗃️</span>
+      <div>
+        <div class="due-count">0</div>
+        <div class="due-label">cards due for review</div>
+      </div>
+    </div>
+    <button class="btn-review-now" onclick="event.stopPropagation();startReview()">Review now →</button>
   </div>
   <div class="continue-bar" id="continue-bar"></div>
   <div class="track-grid" id="track-grid"></div>
@@ -307,10 +501,38 @@ kbd{font-family:var(--mono);font-size:.72rem;background:#eee;
     <div class="comp-sub" id="comp-sub"></div>
     <div class="comp-btns">
       <button class="comp-btn" onclick="resetPractice()">↺ Try again</button>
+      <button class="comp-btn btn-add-deck" id="comp-add-deck"
+        onclick="addTrackToDeck()">🗃️ Add to deck</button>
       <button class="comp-btn" onclick="nav('/results/'+currentTrack)">📊 History</button>
       <button class="comp-btn comp-next" id="comp-next-btn" onclick="navNextTrack()">Next track →</button>
     </div>
   </div>
+</div>
+
+
+<!-- SHADOW -->
+<div id="view-shadow" class="view">
+  <div class="rev-head">
+    <button class="btn-back" onclick="nav('/track/'+currentTrack+'/practice')">← Practice</button>
+    <div class="rev-progress">
+      <div class="rev-prog-bar"><div class="rev-prog-fill" id="sh-prog" style="width:0%"></div></div>
+      <div class="rev-prog-txt" id="sh-prog-txt">0 / 0</div>
+    </div>
+  </div>
+  <div id="sh-body"></div>
+</div>
+
+<!-- REVIEW -->
+<div id="view-review" class="view">
+  <div class="rev-head">
+    <button class="btn-back" onclick="nav('/')">← Home</button>
+    <div class="rev-progress">
+      <div class="rev-prog-bar"><div class="rev-prog-fill" id="rev-prog" style="width:0%"></div></div>
+      <div class="rev-prog-txt" id="rev-prog-txt">0 / 0</div>
+    </div>
+    <span id="rev-again-count" style="font-family:var(--mono);font-size:.68rem;color:var(--bad)"></span>
+  </div>
+  <div id="rev-body"></div>
 </div>
 
 <!-- RESULTS -->
@@ -395,6 +617,8 @@ function route(){
 
   if(mTrack){ currentTrack=parseInt(mTrack[1]); renderLesson(); show('view-lesson') }
   else if(mPrac){ currentTrack=parseInt(mPrac[1]); renderPractice(); show('view-practice') }
+  else if(path==='/review'){ renderReviewView(); show('view-review') }
+  else if(path.startsWith('/shadow/')){ const t=parseInt(path.split('/')[2]); currentTrack=t; renderShadowView(); show('view-shadow') }
   else if(mRes){ currentTrack=parseInt(mRes[1]); renderResults(); show('view-results') }
   else{ renderHome(); show('view-home') }
 
@@ -406,6 +630,18 @@ function show(id){ document.getElementById(id).classList.add('active') }
 // ── HOME ─────────────────────────────────────────────────────────────────────
 function renderHome(){
   document.getElementById('topbar-sub').textContent = '40 tracks';
+
+  // Due cards banner
+  const dueCount = srs.totalDue();
+  const dueEl = document.getElementById('due-banner');
+  if(dueCount>0 && dueEl){
+    dueEl.style.display='flex';
+    dueEl.querySelector('.due-count').textContent=dueCount;
+    dueEl.querySelector('.due-label').textContent=
+      dueCount===1?'card due for review':'cards due for review';
+  } else if(dueEl){
+    dueEl.style.display='none';
+  }
 
   // Continue button
   const cont = document.getElementById('continue-bar');
@@ -430,6 +666,7 @@ function renderHome(){
     const stars = best ? pctToStars(best.pct) : '';
     const pct   = best ? best.pct : 0;
     const donePct = progress ? Math.round(Object.keys(progress.scores||{}).length / total * 100) : 0;
+    const inDeck = srs.hasTrack(parseInt(t));
     const isDone = best != null;
     return `<div class="track-card${isDone?' done':''}" onclick="navLesson(${t})">
       <div class="tc-top">
@@ -438,7 +675,7 @@ function renderHome(){
       </div>
       <div class="tc-title">${track.title}</div>
       <div class="tc-bar"><div class="tc-bar-fill" style="width:${donePct}%"></div></div>
-      <div class="tc-meta">${best?`Best: ${best.pct}%`:progress?'In progress':'Not started'}</div>
+      <div class="tc-meta" style="display:flex;justify-content:space-between;align-items:center">${best?`Best: ${best.pct}%`:progress?'In progress':'Not started'}${inDeck?'<span class="tc-deck">in deck</span>':''}</div>
     </div>`;
   }).join('');
 }
@@ -501,6 +738,7 @@ function renderPractice(){
   document.getElementById('topbar-sub').textContent = `Track ${t} — Practice`;
   document.getElementById('prac-track-label').textContent = `Track ${t}: ${track.title}`;
   document.getElementById('comp-next-btn').style.display = t < 40 ? '' : 'none';
+  loadAutoplay();
 
   // Load saved progress
   const saved = store.getProgress(t);
@@ -509,40 +747,15 @@ function renderPractice(){
 
   // Build exercises HTML
   const listEl = document.getElementById('ex-list');
-  listEl.innerHTML = exercises.map((ex,i)=>{
-    const eid = `e${i}`;
-    const chal = ex.c ? ' chal' : '';
-    const badge = ex.c ? '<span class="cbadge">challenge</span>' : '';
-    const saved_result = practiceState.scores[i];
-    const answered = saved_result != null;
-    const inpCls = answered ? ` ${saved_result}` : '';
-    const ansDsp = answered ? 'flex' : 'none';
-    const chkMap = {ok:'✓ correct',near:'~ close',bad:'✗ wrong',skip:'— skipped'};
-    const chkCls = answered ? ` ${saved_result}` : '';
-    const chkTxt = answered ? (chkMap[saved_result]||'') : '';
-    const savedVal = answered ? (practiceState.inputs?.[i]||'') : '';
-    return `<div class="ex${chal}" id="ex-${eid}" data-idx="${i}">
-  <div class="ex-en">${ex.en}${badge?' '+badge:''}</div>
-  <div class="ex-row">
-    <input class="ex-inp${inpCls}" id="i-${eid}" value="${savedVal.replace(/"/g,'&quot;')}"
-      data-answer="${ex.fr.replace(/"/g,'&quot;')}" placeholder="Type French here…"
-      autocomplete="off" autocorrect="off" spellcheck="false"
-      ${answered?'disabled':''}
-      onfocus="activeInput=this"
-      onkeydown="if(event.key==='Enter')doReveal(${i})">
-    <button class="btn-rev" id="b-${eid}" onclick="doReveal(${i})"
-      ${answered?'disabled':''}>Reveal</button>
-  </div>
-  <div class="ex-ans" id="a-${eid}" style="display:${ansDsp}">
-    <span class="ans-lbl">Answer:</span>
-    <span class="ans-txt">${ex.fr}</span>
-    <span class="chk${chkCls}" id="c-${eid}">${chkTxt}</span>
-  </div>
-</div>`;
-  }).join('');
+  listEl.innerHTML = exercises.map((ex,i)=>buildExCard(ex,i)).join('');
 
   updateScoreDisplay();
   document.getElementById('completion').style.display = 'none';
+  // mark add-to-deck button if this track is already in deck
+  const addBtn=document.getElementById('comp-add-deck');
+  if(addBtn && srs.hasTrack(currentTrack)){
+    addBtn.textContent='✓ Already in deck'; addBtn.classList.add('added'); addBtn.disabled=true;
+  }
 
   // If already complete, show completion
   if(practiceState.done === exercises.length && exercises.length > 0){
@@ -578,10 +791,15 @@ function doReveal(idx){
   practiceState.scores[idx] = result === 'skip' ? 'bad' : result;
   practiceState.inputs[idx] = inp.value;
 
-  if(result === 'ok' || result === 'skip_ok') practiceState.ok++;
+  if(result === 'ok') practiceState.ok++;
   else if(result === 'near') practiceState.near++;
   else practiceState.bad++;
   practiceState.done++;
+
+  // Auto-play French answer aloud if setting is on
+  if(autoPlay && result !== 'skip'){
+    setTimeout(()=>speak(ex.fr,'fr-FR',null), 200);
+  }
 
   // Bump animation
   const scEl = document.getElementById(
@@ -690,12 +908,672 @@ function renderResults(){
   `;
 }
 
+
+// ── SPACED REPETITION (SM-2) ────────────────────────────────────────────────
+function getDateStr(daysFromNow=0){
+  const d=new Date();
+  d.setDate(d.getDate()+daysFromNow);
+  return d.toISOString().split('T')[0];
+}
+function todayStr(){ return getDateStr(0); }
+
+function sm2(card, grade){
+  // grade: 1=Again, 2=Hard, 3=Good, 4=Easy
+  let {interval=1, easeFactor=2.5, repetitions=0, lapses=0} = card;
+  if(grade<=2){
+    lapses++;
+    repetitions=0;
+    interval = grade===1 ? 1 : Math.max(1, Math.round(interval*0.5));
+  } else {
+    if(repetitions===0)      interval=1;
+    else if(repetitions===1) interval=6;
+    else interval=Math.round(interval*easeFactor);
+    if(grade===4) interval=Math.round(interval*1.3);
+    easeFactor=Math.max(1.3, easeFactor+0.1-(5-grade)*(0.08+(5-grade)*0.02));
+    repetitions++;
+  }
+  return { interval, easeFactor, repetitions, lapses,
+           dueDate: getDateStr(interval) };
+}
+
+function gradeIntervalLabel(card, grade){
+  const sim = sm2(card, grade);
+  const d = sim.interval;
+  return d===1?'<1d' : d<7?d+'d' : d<30?Math.round(d/7)+'w' : Math.round(d/30)+'mo';
+}
+
+// ── SRS STORE ────────────────────────────────────────────────────────────────
+const srs = {
+  _get(){ const d=store.load(); return {deck:d.deck||[], cards:d.srs||{}}; },
+  _patch(fn){ const d=store.load(); fn(d); store.save(d); },
+
+  addTrackToDeck(t, practiceScores){
+    // practiceScores: {idx: 'ok'|'near'|'bad'}
+    const exs = EXERCISES[String(t)] || [];
+    this._patch(d=>{
+      if(!d.deck) d.deck=[];
+      if(!d.srs) d.srs={};
+      const existing=new Set(d.deck);
+      let added=0;
+      exs.forEach((_,i)=>{
+        const id=`t${t}_${i}`;
+        if(existing.has(id)) return; // already in deck
+        d.deck.push(id);
+        const score = practiceScores?.[i] || 'ok';
+        // Failed cards → due today; passed cards → due tomorrow
+        const dueIn = score==='bad'||score==='skip' ? 0 : 1;
+        d.srs[id]={ interval:1, easeFactor:2.5, repetitions:0, lapses:0,
+                    dueDate:getDateStr(dueIn), addedDate:todayStr() };
+        added++;
+      });
+      return added;
+    });
+    return exs.length;
+  },
+
+  getDue(){
+    const {deck,cards}=this._get();
+    const today=todayStr();
+    return deck.filter(id=>{ const c=cards[id]; return c&&c.dueDate<=today; });
+  },
+
+  getCard(id){
+    return this._get().cards[id] || {interval:1,easeFactor:2.5,repetitions:0,lapses:0,dueDate:todayStr()};
+  },
+
+  grade(id, g){
+    this._patch(d=>{
+      if(!d.srs) d.srs={};
+      const card=d.srs[id]||{interval:1,easeFactor:2.5,repetitions:0,lapses:0};
+      d.srs[id]={...card,...sm2(card,g)};
+    });
+  },
+
+  deckSize(){ return this._get().deck.length; },
+  hasTrack(t){ const {deck}=this._get(); return deck.some(id=>id.startsWith(`t${t}_`)); },
+  totalDue(){ return this.getDue().length; },
+};
+
+function parseCardId(id){ const m=id.match(/t(\d+)_(\d+)/); return m?[+m[1],+m[2]]:[1,0]; }
+
+// ── REVIEW SESSION ────────────────────────────────────────────────────────────
+let revSession = null;
+
+function startReview(){
+  const due = srs.getDue();
+  if(!due.length){ nav('/'); return; }
+  // Shuffle
+  const cards = due.sort(()=>Math.random()-.5);
+  revSession = { cards, pos:0, again:[], graded:{} };
+  nav('/review');
+}
+
+function renderReviewView(){
+  document.getElementById('topbar-sub').textContent = 'Daily Review';
+  if(!revSession||!revSession.cards.length){ renderRevDone(); return; }
+  renderRevCard();
+}
+
+function renderRevCard(){
+  const {cards, pos, again} = revSession;
+  const allCards = [...cards, ...again]; // again-cards appended at end
+  const total = allCards.length;
+  const remaining = total - Object.keys(revSession.graded).length;
+
+  // progress
+  const done = Object.keys(revSession.graded).length;
+  document.getElementById('rev-prog').style.width = (done/Math.max(total,1)*100)+'%';
+  document.getElementById('rev-prog-txt').textContent = `${done} / ${total}`;
+  const againCount = again.filter(id=>!revSession.graded[id]).length;
+  document.getElementById('rev-again-count').textContent = againCount ? `↩ ${againCount}` : '';
+
+  // find next ungraded
+  let cardId = null;
+  for(let i=pos; i<cards.length; i++){
+    if(!revSession.graded[cards[i]]){ cardId=cards[i]; break; }
+  }
+  if(!cardId){
+    for(let id of again){ if(!revSession.graded[id]){ cardId=id; break; } }
+  }
+  if(!cardId){ renderRevDone(); return; }
+
+  revSession.currentId = cardId;
+  const [t,idx] = parseCardId(cardId);
+  const ex = EXERCISES[String(t)]?.[idx];
+  if(!ex){ revSession.graded[cardId]='skip'; renderRevCard(); return; }
+
+  const card = srs.getCard(cardId);
+  const frEsc = ex.fr.replace(/"/g,'&quot;').replace(/'/g,"&#39;");
+  const enEsc = ex.en.replace(/"/g,'&quot;').replace(/'/g,"&#39;");
+
+  const intervalLabel = card.repetitions>0 ? `interval: ${card.interval}d` : 'new';
+  const lapsesLabel = card.lapses>0 ? ` · lapses: ${card.lapses}` : '';
+
+  const body = document.getElementById('rev-body');
+  body.innerHTML = `
+    <div class="rev-card">
+      <div class="rev-card-label">Translate to French</div>
+      <div class="rev-prompt">
+        <span class="rev-prompt-text">${ex.en}</span>
+        <div class="rev-speak-btns">
+          <button class="btn-speak fr-btn" data-text="${frEsc}" data-lang="fr-FR"
+            onclick="speakBtn(this)" title="Hear French">🔊 FR</button>
+          <button class="btn-speak" data-text="${enEsc}" data-lang="en-GB"
+            onclick="speakBtn(this)" title="Hear English">🔊 EN</button>
+        </div>
+      </div>
+      <div class="rev-row">
+        <input class="rev-inp" id="rev-inp" placeholder="Type French here…"
+          autocomplete="off" autocorrect="off" spellcheck="false"
+          onfocus="activeInput=this"
+          onkeydown="if(event.key==='Enter')revealCard()">
+        <button class="btn-rev-reveal" id="rev-reveal-btn" onclick="revealCard()">Reveal</button>
+      </div>
+      <div class="rev-answer" id="rev-answer">
+        <span class="rev-answer-lbl">Answer</span>
+        <span id="rev-answer-txt"></span>
+        <span id="rev-score-hint" style="font-size:.72rem;font-weight:normal;color:var(--muted);margin-left:.5rem"></span>
+      </div>
+      <div class="rev-grade-btns" id="rev-grade-btns">
+        <button class="btn-grade btn-grade-again" id="bg-again"
+          onclick="gradeCard(1)" disabled>
+          Again
+          <span class="grade-interval" id="gi-again">&lt;1d</span>
+        </button>
+        <button class="btn-grade btn-grade-good" id="bg-good"
+          onclick="gradeCard(3)" disabled>
+          Good
+          <span class="grade-interval" id="gi-good">…</span>
+        </button>
+        <button class="btn-grade btn-grade-easy" id="bg-easy"
+          onclick="gradeCard(4)" disabled>
+          Easy
+          <span class="grade-interval" id="gi-easy">…</span>
+        </button>
+      </div>
+      <div class="rev-card-meta">
+        <span class="rev-meta-chip">Track ${t}: ${(TRACKS[t]||{}).title||''}</span>
+        <span class="rev-meta-chip">${intervalLabel}${lapsesLabel}</span>
+        <span class="rev-meta-chip">${ex.c?'challenge':'direct'}</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('rev-inp').focus();
+
+  // update interval previews
+  ['again','good','easy'].forEach((lbl,i)=>{
+    const g=[1,3,4][i];
+    document.getElementById('gi-'+lbl).textContent = gradeIntervalLabel(card,g);
+  });
+}
+
+function revealCard(){
+  const inp = document.getElementById('rev-inp');
+  const btn = document.getElementById('rev-reveal-btn');
+  if(!inp||btn.disabled) return;
+
+  const id = revSession.currentId;
+  const [t,idx] = parseCardId(id);
+  const ex = EXERCISES[String(t)]?.[idx];
+  if(!ex) return;
+
+  const result = scoreAnswer(inp.value, ex.fr);
+  inp.classList.add(result==='skip'?'bad':result);
+  inp.disabled = true;
+  btn.disabled = true;
+
+  document.getElementById('rev-answer').style.display = 'block';
+  document.getElementById('rev-answer-txt').textContent = ex.fr;
+  const hints = {ok:'✓ correct',near:'~ close',bad:'✗ wrong',skip:'— skipped'};
+  document.getElementById('rev-score-hint').textContent = hints[result]||'';
+
+  // enable grade buttons, pre-select suggested grade
+  ['again','good','easy'].forEach(lbl=>{
+    document.getElementById('bg-'+lbl).disabled = false;
+  });
+
+  // auto-play if enabled
+  if(autoPlay) setTimeout(()=>speak(ex.fr,'fr-FR',null),200);
+
+  // highlight suggested grade
+  const suggested = result==='ok'?'good': result==='near'?'again':'again';
+  document.getElementById('bg-'+suggested).style.fontWeight='800';
+  document.getElementById('bg-'+suggested).style.boxShadow='0 0 0 3px rgba(0,0,0,.15)';
+}
+
+function gradeCard(grade){
+  const id = revSession.currentId;
+  srs.grade(id, grade);
+  revSession.graded[id] = grade;
+  if(grade===1){
+    // "Again" — add back for re-review this session
+    if(!revSession.again.includes(id)) revSession.again.push(id);
+  }
+  renderRevCard();
+}
+
+function renderRevDone(){
+  const graded = revSession?.graded || {};
+  const total = Object.keys(graded).length;
+  const passed = Object.values(graded).filter(g=>g>=3).length;
+  const again  = Object.values(graded).filter(g=>g===1).length;
+  const nextDue = srs.getDue().length; // any still due after this session
+
+  document.getElementById('rev-body').innerHTML = `
+    <div class="rev-done">
+      <div class="rev-done-icon">${passed===total?'🎉':'💪'}</div>
+      <div class="rev-done-title">${passed===total?'All done!':'Session complete'}</div>
+      <div class="rev-done-sub">
+        ${total} cards reviewed · ${passed} passed · ${again} again<br>
+        ${nextDue?`${nextDue} card${nextDue===1?'':'s'} still due today`:'No more cards due today'}
+      </div>
+      <div class="rev-done-btns">
+        <button class="btn-home" onclick="nav('/')">← Home</button>
+        ${nextDue?'<button class="btn-home" style="background:var(--amber)" onclick="startReview()">Review more →</button>':''}
+      </div>
+    </div>
+  `;
+  document.getElementById('rev-prog').style.width='100%';
+  document.getElementById('rev-prog-txt').textContent=`${total} / ${total}`;
+  revSession = null;
+}
+
+
+// ── MODE STATE ────────────────────────────────────────────────────────────
+let currentMode = 'read'; // 'read' | 'listen'
+
+function setMode(mode){
+  currentMode = mode;
+  ['read','listen'].forEach(m=>{
+    const btn = document.getElementById('mode-'+m);
+    if(btn) btn.classList.toggle('active', m===mode);
+  });
+  // shadow has no persistent toggle — it navigates away
+  const listEl = document.getElementById('ex-list');
+  if(listEl){
+    const exercises = EXERCISES[String(currentTrack)]||[];
+    listEl.innerHTML = exercises.map((ex,i)=>buildExCard(ex,i)).join('');
+  }
+}
+
+// ── EXERCISE CARD BUILDER (mode-aware) ───────────────────────────────────
+function buildExCard(ex, i){
+  const eid  = `e${i}`;
+  const chal = ex.c ? ' chal' : '';
+  const badge = ex.c ? '<span class="cbadge">challenge</span>' : '';
+  const saved_result = practiceState.scores?.[i];
+  const answered = saved_result != null;
+  const inpCls = answered ? ` ${saved_result}` : '';
+  const ansDsp = answered ? 'flex' : 'none';
+  const chkMap = {ok:'✓ correct',near:'~ close',bad:'✗ wrong',skip:'— skipped'};
+  const chkCls = answered ? ` ${saved_result}` : '';
+  const chkTxt = answered ? (chkMap[saved_result]||'') : '';
+  const savedVal = answered ? (practiceState.inputs?.[i]||'') : '';
+  const frEsc = ex.fr.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const enEsc = ex.en.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const disA  = answered ? 'disabled' : '';
+
+  if(currentMode === 'listen'){
+    // ── LISTEN MODE ──
+    // English is hidden until revealed; French audio is the starting point
+    const enCls = answered ? ' revealed' : '';
+    return `<div class="ex${chal} listen-mode" id="ex-${eid}" data-idx="${i}">
+  <div class="listen-play-row">
+    <button class="btn-listen-play" data-text="${frEsc}" data-lang="fr-FR"
+      onclick="speakBtn(this)" title="Hear the French sentence">▶ Hear French</button>
+    <button class="btn-reveal-en${answered?' done':''}" id="shen-${eid}"
+      onclick="revealEnglish('${eid}','${enEsc}')"
+      ${answered?'disabled':''}>Show English</button>
+    ${badge}
+  </div>
+  <div class="ex-en" style="margin-bottom:.5rem">
+    <span class="ex-en-text${enCls}" id="en-${eid}">${answered?ex.en:'…'}</span>
+    <span class="en-tag">EN</span>
+    <div class="speak-btns" style="margin-left:auto">
+      <button class="btn-speak fr-btn" data-text="${frEsc}" data-lang="fr-FR"
+        onclick="speakBtn(this)">🔊 FR</button>
+      <button class="btn-speak" data-text="${enEsc}" data-lang="en-GB"
+        onclick="speakBtn(this)">🔊 EN</button>
+    </div>
+  </div>
+  <div class="ex-row">
+    <input class="ex-inp${inpCls}" id="i-${eid}" value="${savedVal.replace(/"/g,'&quot;')}"
+      data-answer="${ex.fr.replace(/"/g,'&quot;')}" placeholder="Type French here…"
+      autocomplete="off" autocorrect="off" spellcheck="false" ${disA}
+      onfocus="activeInput=this"
+      onkeydown="if(event.key==='Enter')doReveal(${i})">
+    <button class="btn-mic" id="mic-${eid}" onclick="startVoice('i-${eid}','b-${eid}')" ${disA} title="Speak French">🎤</button>
+    <button class="btn-rev" id="b-${eid}" onclick="doReveal(${i})" ${disA}>Reveal</button>
+  </div>
+  <div class="ex-ans" id="a-${eid}" style="display:${ansDsp}">
+    <span class="ans-lbl">Answer:</span>
+    <span class="ans-txt">${ex.fr}</span>
+    <span class="chk${chkCls}" id="c-${eid}">${chkTxt}</span>
+  </div>
+</div>`;
+  }
+
+  // ── READ MODE (default) ──
+  return `<div class="ex${chal}" id="ex-${eid}" data-idx="${i}">
+  <div class="ex-en">
+    <span>${ex.en}</span>${badge?' '+badge:''}
+    <div class="speak-btns">
+      <button class="btn-speak fr-btn" data-text="${frEsc}" data-lang="fr-FR"
+        onclick="speakBtn(this)" title="Hear French">🔊 FR</button>
+      <button class="btn-speak" data-text="${enEsc}" data-lang="en-GB"
+        onclick="speakBtn(this)" title="Hear English">🔊 EN</button>
+    </div>
+  </div>
+  <div class="ex-row">
+    <input class="ex-inp${inpCls}" id="i-${eid}" value="${savedVal.replace(/"/g,'&quot;')}"
+      data-answer="${ex.fr.replace(/"/g,'&quot;')}" placeholder="Type French here…"
+      autocomplete="off" autocorrect="off" spellcheck="false" ${disA}
+      onfocus="activeInput=this"
+      onkeydown="if(event.key==='Enter')doReveal(${i})">
+    <button class="btn-mic" id="mic-${eid}" onclick="startVoice('i-${eid}','b-${eid}')" ${disA} title="Speak French">🎤</button>
+    <button class="btn-rev" id="b-${eid}" onclick="doReveal(${i})" ${disA}>Reveal</button>
+  </div>
+  <div class="ex-ans" id="a-${eid}" style="display:${ansDsp}">
+    <span class="ans-lbl">Answer:</span>
+    <span class="ans-txt">${ex.fr}</span>
+    <span class="chk${chkCls}" id="c-${eid}">${chkTxt}</span>
+  </div>
+</div>`;
+}
+
+function revealEnglish(eid, enText){
+  const span = document.getElementById('en-'+eid);
+  const btn  = document.getElementById('shen-'+eid);
+  if(span){ span.textContent = decodeURIComponent(enText.replace(/&#39;/g,"'")); span.classList.add('revealed'); }
+  if(btn) { btn.classList.add('done'); btn.disabled=true; }
+}
+
+// ── VOICE INPUT (SpeechRecognition) ──────────────────────────────────────
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let activeRecog = null;
+let activeMicBtn = null;
+
+function startVoice(inputId, revealId){
+  if(!SR){
+    alert('Voice input requires Chrome or Edge.\nFirefox does not support SpeechRecognition yet.');
+    return;
+  }
+  const inp = document.getElementById(inputId);
+  const micBtn = document.getElementById('mic-'+inputId);
+  if(!inp || inp.disabled) return;
+
+  // Toggle off if already recording this input
+  if(activeRecog && activeMicBtn === micBtn){
+    activeRecog.abort(); activeRecog=null;
+    micBtn.classList.remove('recording'); micBtn.textContent='🎤'; activeMicBtn=null;
+    return;
+  }
+  if(activeRecog){ activeRecog.abort(); activeRecog=null; }
+  if(activeMicBtn){ activeMicBtn.classList.remove('recording'); activeMicBtn.textContent='🎤'; }
+
+  activeMicBtn = micBtn;
+  if(micBtn){ micBtn.classList.add('recording'); micBtn.textContent='⏹'; }
+
+  const recog = new SR();
+  activeRecog = recog;
+  recog.lang = 'fr-FR';
+  recog.continuous = false;
+  recog.interimResults = true;
+  recog.maxAlternatives = 1;
+
+  recog.onresult = (e)=>{
+    const t = e.results[0][0].transcript;
+    inp.value = t;
+    if(e.results[0].isFinal){
+      cleanup();
+      // auto-reveal after voice
+      const revBtn = document.getElementById(revealId);
+      if(revBtn && !revBtn.disabled) setTimeout(()=>revBtn.click(), 250);
+    }
+  };
+  recog.onerror = ()=>cleanup();
+  recog.onend = ()=>cleanup();
+
+  function cleanup(){
+    activeRecog=null;
+    if(micBtn){ micBtn.classList.remove('recording'); micBtn.textContent='🎤'; }
+    if(activeMicBtn===micBtn) activeMicBtn=null;
+  }
+  recog.start();
+}
+
+// ── SHADOW MODE ───────────────────────────────────────────────────────────
+let shadowSess = null;
+
+function startShadow(t){
+  const exercises = EXERCISES[String(t)]||[];
+  if(!exercises.length) return;
+  shadowSess = {
+    track: t,
+    indices: exercises.map((_,i)=>i).sort(()=>Math.random()-.5),
+    pos: 0,
+    results: {}
+  };
+  nav('/shadow/'+t);
+}
+
+function renderShadowView(){
+  document.getElementById('topbar-sub').textContent = 'Shadowing — Track '+currentTrack;
+  if(!shadowSess || shadowSess.track !== currentTrack){
+    startShadow(currentTrack); return; // re-init if navigated directly
+  }
+  renderShadowCard();
+}
+
+function renderShadowCard(){
+  const {track, indices, pos} = shadowSess;
+  const total = indices.length;
+  document.getElementById('sh-prog').style.width=(pos/total*100)+'%';
+  document.getElementById('sh-prog-txt').textContent=`${pos} / ${total}`;
+
+  if(pos>=total){ renderShadowDone(); return; }
+
+  const idx = indices[pos];
+  const ex  = EXERCISES[String(track)]?.[idx];
+  if(!ex){ shadowSess.pos++; renderShadowCard(); return; }
+
+  const frEsc = ex.fr.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  const enEsc = ex.en.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+
+  document.getElementById('sh-body').innerHTML = `
+<div class="shadow-card">
+  <div class="shadow-stage">
+    <div class="shadow-listen-row">
+      <button class="btn-shadow-play" id="sh-play"
+        data-text="${frEsc}" data-lang="fr-FR" onclick="speakBtn(this)">
+        ▶ Hear French
+      </button>
+      <button class="btn-speak" data-text="${enEsc}" data-lang="en-GB"
+        onclick="speakBtn(this)" title="Hear English">🔊 EN</button>
+      <span style="font-family:var(--mono);font-size:.7rem;color:var(--muted)">
+        ${ex.en}
+      </span>
+    </div>
+
+    <div style="display:flex;gap:.5rem;align-items:center">
+      <button class="btn-mic" id="sh-mic" onclick="startShadowVoice()" title="Say the French aloud">
+        🎤 Shadow it
+      </button>
+      <span style="font-family:var(--mono);font-size:.64rem;color:var(--muted)">
+        or type below
+      </span>
+      <input class="rev-inp" id="sh-inp" placeholder="Type or speak French…"
+        autocomplete="off" autocorrect="off" spellcheck="false"
+        onfocus="activeInput=this"
+        onkeydown="if(event.key==='Enter')shadowReveal()"
+        style="flex:1">
+      <button class="btn-rev-reveal" onclick="shadowReveal()">Check</button>
+    </div>
+
+    <div class="shadow-answer-row" id="sh-ans">
+      <span class="shadow-answer-label">Correct</span>
+      <div class="shadow-compare">
+        <span class="shadow-correct" id="sh-correct"></span>
+        <span class="shadow-yours" id="sh-yours"></span>
+        <span class="shadow-match" id="sh-match"></span>
+      </div>
+    </div>
+
+    <div class="shadow-grade-row" id="sh-grades" style="display:none">
+      <button class="btn-grade btn-grade-again" onclick="shadowGrade(1)">
+        Again<span class="grade-interval">repeat</span>
+      </button>
+      <button class="btn-grade btn-grade-good" onclick="shadowGrade(3)">
+        Good<span class="grade-interval" id="sh-gi-good">…</span>
+      </button>
+      <button class="btn-grade btn-grade-easy" onclick="shadowGrade(4)">
+        Easy<span class="grade-interval" id="sh-gi-easy">…</span>
+      </button>
+    </div>
+
+    <div class="shadow-info">
+      <span class="shadow-chip">Track ${track}: ${(TRACKS[track]||{}).title||''}</span>
+      <span class="shadow-chip">${ex.c?'challenge':'direct'}</span>
+      <span class="shadow-chip">${pos+1} of ${total}</span>
+    </div>
+  </div>
+</div>`;
+
+  // Update interval previews if card is in deck
+  const cardId = `t${track}_${idx}`;
+  const card = srs.getCard(cardId);
+  if(card){
+    document.getElementById('sh-gi-good').textContent = gradeIntervalLabel(card,3);
+    document.getElementById('sh-gi-easy').textContent = gradeIntervalLabel(card,4);
+  }
+
+  // Auto-play on card load
+  setTimeout(()=>{
+    const playBtn = document.getElementById('sh-play');
+    if(playBtn) speakBtn(playBtn);
+  }, 300);
+}
+
+function startShadowVoice(){
+  if(!SR){ alert('Voice input requires Chrome or Edge.'); return; }
+  const inp = document.getElementById('sh-inp');
+  const micBtn = document.getElementById('sh-mic');
+  if(!inp) return;
+
+  if(activeRecog && activeMicBtn===micBtn){
+    activeRecog.abort(); activeRecog=null;
+    micBtn.classList.remove('recording'); micBtn.innerHTML='🎤 Shadow it'; activeMicBtn=null;
+    return;
+  }
+  if(activeRecog){ activeRecog.abort(); activeRecog=null; }
+  if(activeMicBtn){ activeMicBtn.classList.remove('recording'); activeMicBtn.textContent='🎤'; }
+
+  activeMicBtn=micBtn;
+  micBtn.classList.add('recording'); micBtn.innerHTML='⏹ Stop';
+
+  const recog = new SR();
+  activeRecog=recog;
+  recog.lang='fr-FR'; recog.continuous=false; recog.interimResults=true;
+
+  recog.onresult=(e)=>{
+    const t=e.results[0][0].transcript;
+    inp.value=t;
+    if(e.results[0].isFinal){
+      cleanup(); shadowReveal();
+    }
+  };
+  recog.onerror=()=>cleanup();
+  recog.onend=()=>cleanup();
+
+  function cleanup(){
+    activeRecog=null;
+    if(micBtn){ micBtn.classList.remove('recording'); micBtn.innerHTML='🎤 Shadow it'; }
+    if(activeMicBtn===micBtn) activeMicBtn=null;
+  }
+  recog.start();
+}
+
+function shadowReveal(){
+  const {track, indices, pos} = shadowSess;
+  const idx = indices[pos];
+  const ex  = EXERCISES[String(track)]?.[idx];
+  if(!ex) return;
+
+  const inp = document.getElementById('sh-inp');
+  const userVal = inp?.value||'';
+  const result = scoreAnswer(userVal, ex.fr);
+
+  // show answer
+  const ansRow = document.getElementById('sh-ans');
+  ansRow.classList.add('show');
+  document.getElementById('sh-correct').textContent = ex.fr;
+  document.getElementById('sh-yours').textContent = userVal ? `You said: "${userVal}"` : '(no input)';
+
+  const matchMap = {ok:'✓ correct',near:'~ close — check details',bad:'✗ different',skip:'— nothing entered'};
+  const matchEl = document.getElementById('sh-match');
+  matchEl.textContent = matchMap[result]||'';
+  matchEl.className = 'shadow-match '+(result==='skip'?'bad':result);
+
+  document.getElementById('sh-grades').style.display='grid';
+  if(inp){ inp.disabled=true; }
+  const checkBtn = ansRow.parentElement?.querySelector('.btn-rev-reveal');
+  if(checkBtn) checkBtn.disabled=true;
+
+  // auto-play correct answer
+  if(autoPlay) setTimeout(()=>speak(ex.fr,'fr-FR',null),200);
+}
+
+function shadowGrade(grade){
+  const {track, indices, pos} = shadowSess;
+  const idx = indices[pos];
+  const cardId = `t${track}_${idx}`;
+
+  // grade SRS card if in deck
+  const d = store.load();
+  if(d.srs && d.srs[cardId]) srs.grade(cardId, grade);
+
+  shadowSess.results[idx] = grade;
+  if(grade===1){
+    // push to end for repeat
+    shadowSess.indices.push(idx);
+  } else {
+    shadowSess.pos++;
+  }
+  renderShadowCard();
+}
+
+function renderShadowDone(){
+  const {results} = shadowSess;
+  const total = Object.keys(results).length;
+  const good  = Object.values(results).filter(g=>g>=3).length;
+  const again = Object.values(results).filter(g=>g===1).length;
+
+  document.getElementById('sh-body').innerHTML = `
+<div class="shadow-done">
+  <div class="shadow-done-icon">${good===total?'🎙️':'💪'}</div>
+  <div class="shadow-done-title">Shadow session done</div>
+  <div class="shadow-done-sub">
+    ${total} cards · ${good} good · ${again} repeated<br>
+    Keep shadowing daily to internalise the rhythm.
+  </div>
+  <div class="rev-done-btns">
+    <button class="btn-home" onclick="nav('/track/'+currentTrack+'/practice')">← Practice</button>
+    <button class="btn-home" onclick="startShadow(currentTrack)">🔄 Again</button>
+  </div>
+</div>`;
+  document.getElementById('sh-prog').style.width='100%';
+  shadowSess=null;
+}
+
 // ── SCORING ───────────────────────────────────────────────────────────────────
 function stripAccents(s){
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 }
 function clean(s){
-  return stripAccents(s.toLowerCase()).replace(/[?!.,;:«»''""—\-]/g,'').replace(/\s+/g,' ').trim();
+  return stripAccents(s.toLowerCase())
+    .replace(/[?!.,;:\u00ab\u00bb\u2018\u2019\u201c\u201d\u2014\-]/g,'')
+    .replace(/\s+/g,' ').trim();
 }
 function lev(a,b){
   if(!a.length) return b.length;
@@ -709,13 +1587,74 @@ function lev(a,b){
   return d[a.length][b.length];
 }
 function scoreAnswer(input, answer){
-  const u = clean(input), a = clean(answer);
+  const u=clean(input), a=clean(answer);
   if(!u) return 'skip';
-  if(u === a) return 'ok';
-  const dist = lev(u, a);
-  if(dist <= 3) return 'ok';                               // ≤3 chars diff = correct
-  if(dist <= Math.max(7, Math.floor(a.length * 0.12))) return 'near';  // close
+  if(u===a) return 'ok';
+
+  // 1. Full-string Levenshtein — ≤3 chars different = correct (user requirement)
+  const dist=lev(u,a);
+  if(dist<=3) return 'ok';
+
+  // 2. Bag-of-words: same words in any order (handles "tu peux" vs "peux tu")
+  const uToks=u.split(' ').filter(Boolean).sort();
+  const aToks=a.split(' ').filter(Boolean).sort();
+  if(uToks.length===aToks.length){
+    const sortedU=uToks.join(' '), sortedA=aToks.join(' ');
+    if(sortedU===sortedA) return 'ok';       // exact same words, different order
+    const sortedDist=lev(sortedU,sortedA);
+    if(sortedDist<=3) return 'ok';           // same words with tiny typos
+    if(sortedDist<=8) return 'near';
+  }
+
+  // 3. Word-overlap ratio
+  const uSet=new Set(u.split(' ').filter(Boolean));
+  const aSet=new Set(a.split(' ').filter(Boolean));
+  const overlap=[...uSet].filter(w=>aSet.has(w)).length;
+  const ratio=overlap/Math.max(uSet.size,aSet.size,1);
+  if(ratio>=0.88) return 'near';
+
+  // 4. Standard distance threshold
+  if(dist<=Math.max(7,Math.floor(a.length*0.12))) return 'near';
   return 'bad';
+}
+
+// ── VOICE / TTS ─────────────────────────────────────────────────────────────
+let voices=[];
+let currentSpeakBtn=null;
+function loadVoices(){ voices=window.speechSynthesis.getVoices(); }
+if(window.speechSynthesis){
+  loadVoices();
+  window.speechSynthesis.onvoiceschanged=loadVoices;
+}
+function getBestVoice(lang){
+  const base=lang.split('-')[0];
+  return voices.find(v=>v.lang===lang&&(v.name.includes('Natural')||v.name.includes('Neural')||v.name.includes('Enhanced')||v.name.includes('Amelie')||v.name.includes('Thomas')||v.name.includes('Aurelie')))
+      || voices.find(v=>v.lang===lang)
+      || voices.find(v=>v.lang.startsWith(base+'-'))
+      || voices.find(v=>v.lang.startsWith(base))
+      || null;
+}
+function speak(text,lang,btn){
+  if(!window.speechSynthesis){ alert('Text-to-speech not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  if(currentSpeakBtn){ currentSpeakBtn.classList.remove('playing'); currentSpeakBtn=null; }
+  if(btn){ btn.classList.add('playing'); currentSpeakBtn=btn; }
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=lang; u.rate=lang.startsWith('fr')?0.82:0.9; u.pitch=1;
+  const v=getBestVoice(lang); if(v) u.voice=v;
+  u.onend=()=>{ if(btn) btn.classList.remove('playing'); if(currentSpeakBtn===btn) currentSpeakBtn=null; };
+  u.onerror=()=>{ if(btn) btn.classList.remove('playing'); if(currentSpeakBtn===btn) currentSpeakBtn=null; };
+  window.speechSynthesis.speak(u);
+}
+function speakBtn(el){ speak(el.dataset.text, el.dataset.lang, el); }
+let autoPlay=false;
+function saveAutoplay(v){
+  autoPlay=v; try{localStorage.setItem('lt_autoplay',v?'true':'false');}catch(e){}
+}
+function loadAutoplay(){
+  try{ autoPlay=localStorage.getItem('lt_autoplay')==='true'; }catch(e){}
+  const chk=document.getElementById('autoplay-chk');
+  if(chk) chk.checked=autoPlay;
 }
 
 // ── CHAR INSERTION ────────────────────────────────────────────────────────────
@@ -729,6 +1668,16 @@ function ins(ch){
 }
 
 // ── UTILS ─────────────────────────────────────────────────────────────────────
+function addTrackToDeck(){
+  const btn = document.getElementById('comp-add-deck');
+  if(!btn || btn.classList.contains('added')) return;
+  const scores = practiceState.scores || {};
+  srs.addTrackToDeck(currentTrack, scores);
+  btn.textContent = '✓ Added to deck';
+  btn.classList.add('added');
+  btn.disabled = true;
+}
+
 function pctToStars(pct){
   if(pct >= 90) return '★★★';
   if(pct >= 70) return '★★☆';
