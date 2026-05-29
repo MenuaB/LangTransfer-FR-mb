@@ -396,6 +396,119 @@ kbd{font-family:var(--mono);font-size:.72rem;background:#eee;
 .shadow-done-sub{font-family:var(--mono);font-size:.72rem;color:var(--muted);
   margin-bottom:1.2rem;line-height:1.7}
 
+/* ── TOPBAR ACTIONS ── */
+.topbar-actions{display:flex;align-items:center;gap:.35rem;flex-shrink:0}
+.btn-topbar{background:rgba(255,255,255,.12);color:#f5f2eb;border:1px solid rgba(255,255,255,.2);
+  border-radius:6px;padding:4px 9px;font-family:var(--mono);font-size:.65rem;
+  cursor:pointer;transition:all .12s;white-space:nowrap;line-height:1.5}
+.btn-topbar:hover{background:rgba(255,255,255,.24)}
+
+/* ── HOME STATS ── */
+.home-stats{max-width:900px;margin:0 auto .7rem;display:flex;gap:.45rem;flex-wrap:wrap}
+.stat-chip{background:var(--card);border:1px solid var(--border);border-radius:7px;
+  padding:.38rem .75rem;display:flex;align-items:center;gap:.4rem;cursor:default}
+.stat-chip.clickable{cursor:pointer;transition:border-color .12s,box-shadow .12s}
+.stat-chip.clickable:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+.stat-chip-val{font-family:var(--mono);font-size:.88rem;font-weight:bold;color:var(--accent)}
+.stat-chip-val.due{color:var(--bad)}
+.stat-chip-lbl{font-family:var(--mono);font-size:.58rem;color:var(--muted)}
+
+/* ── HOME ACTIONS ── */
+.home-actions{max-width:900px;margin:0 auto .8rem;display:flex;gap:.55rem;flex-wrap:wrap;align-items:center}
+.btn-deck-home{display:inline-flex;align-items:center;gap:.4rem;
+  background:var(--ink);color:#fff;border:none;border-radius:8px;
+  padding:.55rem 1.1rem;font-family:var(--mono);font-size:.74rem;
+  cursor:pointer;transition:background .12s}
+.btn-deck-home:hover{background:#333}
+.btn-settings-home{display:inline-flex;align-items:center;gap:.3rem;
+  background:#fff;color:var(--muted);border:1px solid var(--border);border-radius:8px;
+  padding:.5rem .8rem;font-family:var(--mono);font-size:.7rem;
+  cursor:pointer;transition:all .12s;margin-left:auto}
+.btn-settings-home:hover{background:var(--paper);border-color:var(--accent);color:var(--ink)}
+
+/* ── DECK VIEW ── */
+#view-deck{max-width:900px;margin:0 auto;padding:1.2rem 1rem 3rem}
+.deck-head{display:flex;align-items:center;gap:.7rem;margin-bottom:1rem;flex-wrap:wrap}
+.deck-stats-row{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:1rem}
+.deck-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:.5rem .85rem;display:flex;flex-direction:column;gap:1px;min-width:78px}
+.deck-stat-val{font-family:var(--mono);font-size:1rem;font-weight:bold;color:var(--accent)}
+.deck-stat-lbl{font-family:var(--mono);font-size:.57rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.deck-stat.due .deck-stat-val{color:var(--bad)}
+.deck-stat.new-cards .deck-stat-val{color:#2255aa}
+.deck-filter{display:flex;gap:.5rem;align-items:center;margin-bottom:.7rem;flex-wrap:wrap}
+.deck-filter-lbl{font-family:var(--mono);font-size:.59rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+select.deck-filter-sel{font-family:var(--mono);font-size:.73rem;padding:4px 8px;
+  border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--ink);outline:none;cursor:pointer}
+.deck-card-list{display:flex;flex-direction:column;gap:.38rem}
+.deck-card-item{background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:.5rem .8rem;display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.deck-card-item.due-today{border-color:#e8b0b0;background:#fff8f8}
+.deck-track-tag{font-family:var(--mono);font-size:.57rem;background:var(--acc-lt);
+  color:var(--accent);border:1px solid #b5d4c0;border-radius:4px;
+  padding:2px 5px;flex-shrink:0;white-space:nowrap}
+.deck-card-en{font-size:.81rem;flex:1;min-width:100px;line-height:1.4}
+.deck-card-fr{font-family:var(--mono);font-size:.75rem;color:var(--accent);
+  flex:1;min-width:80px;line-height:1.4}
+.deck-card-meta{display:flex;gap:.32rem;flex-wrap:wrap;flex-shrink:0}
+.d-chip{font-family:var(--mono);font-size:.56rem;background:var(--paper);
+  border:1px solid var(--border);border-radius:4px;padding:2px 5px;color:var(--muted)}
+.d-chip.due{background:#fef2f2;color:var(--bad);border-color:#e8b0b0}
+.d-chip.learned{background:#edf7ef;color:var(--ok);border-color:#b5d4c0}
+.d-chip.new-card{background:#eef4ff;color:#2255aa;border-color:#b0c8f0}
+.btn-rm-card{background:#fff;border:1px solid var(--border);border-radius:4px;
+  padding:2px 7px;font-family:var(--mono);font-size:.59rem;cursor:pointer;
+  color:var(--muted);transition:all .12s;flex-shrink:0}
+.btn-rm-card:hover{background:#fef2f2;border-color:var(--bad);color:var(--bad)}
+.deck-empty{text-align:center;padding:3rem 1rem;color:var(--muted);font-style:italic;font-size:.87rem}
+.deck-top-actions{display:flex;gap:.55rem;align-items:center;margin-bottom:.85rem;flex-wrap:wrap}
+
+/* ── PER-CARD DECK BUTTON ── */
+.btn-add-card{background:#fff;border:1px solid var(--border);border-radius:4px;
+  padding:2px 8px;font-family:var(--mono);font-size:.59rem;cursor:pointer;
+  color:var(--muted);transition:all .12s;margin-left:auto;flex-shrink:0;white-space:nowrap}
+.btn-add-card:hover{background:var(--acc-lt);border-color:var(--accent);color:var(--accent)}
+.btn-add-card.in-deck{background:var(--acc-lt);color:var(--accent);
+  border-color:var(--acc-mid);pointer-events:none}
+
+/* ── SETTINGS MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;
+  display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.hidden{display:none}
+.modal-box{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.5rem;max-width:420px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.modal-title{font-size:1rem;font-weight:bold;font-style:italic;margin-bottom:1rem;
+  display:flex;align-items:center;justify-content:space-between}
+.modal-close-x{background:none;border:none;font-size:1.2rem;cursor:pointer;
+  color:var(--muted);line-height:1;padding:0 4px}
+.modal-close-x:hover{color:var(--ink)}
+.modal-section{margin-bottom:.85rem}
+.modal-section-label{font-family:var(--mono);font-size:.57rem;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);margin-bottom:.4rem}
+.modal-row{display:flex;align-items:center;justify-content:space-between;
+  padding:.48rem 0;border-bottom:1px solid var(--border);gap:.8rem}
+.modal-row:last-child{border-bottom:none;padding-bottom:0}
+.modal-row-desc{font-size:.83rem;line-height:1.4}
+.modal-row-sub{font-family:var(--mono);font-size:.59rem;color:var(--muted);margin-top:1px}
+.btn-m-action{font-family:var(--mono);font-size:.65rem;padding:4px 10px;
+  border-radius:6px;cursor:pointer;border:1px solid var(--border);background:#fff;
+  color:var(--ink);transition:all .12s;white-space:nowrap;flex-shrink:0}
+.btn-m-action:hover{background:var(--paper)}
+.btn-m-danger{border-color:#c08080;color:var(--bad)}
+.btn-m-danger:hover{background:#fef2f2;border-color:var(--bad)}
+.modal-data-info{font-family:var(--mono);font-size:.63rem;color:var(--muted);
+  margin-top:.7rem;padding:.45rem .65rem;background:var(--paper);border-radius:6px;
+  border:1px solid var(--border);line-height:1.6}
+
+/* ── RESULTS EXTRA ── */
+.results-foot{display:flex;gap:.6rem;margin-top:1.2rem;flex-wrap:wrap;align-items:center}
+
+@media(max-width:480px){
+  .deck-card-fr{display:none}
+  .modal-box{padding:1.1rem}
+  .deck-stats-row{gap:.4rem}
+}
+
 </style>
 </head>
 <body>
@@ -406,6 +519,10 @@ kbd{font-family:var(--mono);font-size:.72rem;background:#eee;
     <span>Practice App</span>
   </div>
   <span class="topbar-sub" id="topbar-sub">Loading…</span>
+  <div class="topbar-actions">
+    <button class="btn-topbar" onclick="nav('/deck')">🗃 Deck</button>
+    <button class="btn-topbar" onclick="openSettings()">⚙</button>
+  </div>
 </div>
 
 <div id="loading">
@@ -419,6 +536,7 @@ kbd{font-family:var(--mono);font-size:.72rem;background:#eee;
     <h1>Introduction to French</h1>
     <p>Follow each track: read the lesson, then practise. Your scores are saved locally.</p>
   </div>
+  <div class="home-stats" id="home-stats"></div>
   <div id="due-banner" class="due-banner" style="display:none;cursor:pointer" onclick="startReview()">
     <div class="due-banner-left">
       <span class="due-icon">🗃️</span>
@@ -429,7 +547,7 @@ kbd{font-family:var(--mono);font-size:.72rem;background:#eee;
     </div>
     <button class="btn-review-now" onclick="event.stopPropagation();startReview()">Review now →</button>
   </div>
-  <div class="continue-bar" id="continue-bar"></div>
+  <div class="home-actions" id="home-actions"></div>
   <div class="track-grid" id="track-grid"></div>
 </div>
 
@@ -485,6 +603,15 @@ kbd{font-family:var(--mono);font-size:.72rem;background:#eee;
     <button class="ch" onclick="ins('É')">É</button>
     <button class="ch" onclick="ins('È')">È</button>
     <button class="ch" onclick="ins('À')">À</button>
+  </div>
+  <div class="mode-bar">
+    <span class="mode-bar-label">Mode</span>
+    <button id="mode-read"   class="mode-btn active" onclick="setMode('read')">📖 Read</button>
+    <button id="mode-listen" class="mode-btn"        onclick="setMode('listen')">🎧 Listen</button>
+    <button                  class="mode-btn"        onclick="startShadow(currentTrack)">🎙 Shadow</button>
+    <div class="autoplay-toggle" style="margin-left:auto">
+      <label><input type="checkbox" id="autoplay-chk" onchange="saveAutoplay(this.checked)"> Auto-play FR</label>
+    </div>
   </div>
   <div class="prac-prog">
     <div class="prog-bar"><div class="prog-fill" id="prac-prog-fill" style="width:0%"></div></div>
@@ -545,7 +672,71 @@ kbd{font-family:var(--mono);font-size:.72rem;background:#eee;
     <div class="lesson-title" id="results-title" style="font-size:1.2rem;font-weight:bold;font-style:italic;margin-bottom:.8rem"></div>
   </div>
   <div id="results-body"></div>
-  <button class="btn-practice-again" onclick="navPractice()">Practice again →</button>
+  <div class="results-foot">
+    <button class="btn-practice-again" onclick="navPractice()">Practice again →</button>
+    <button class="btn-sec btn-reset" style="margin-left:auto" onclick="clearCurrentTrackHistory()">🗑 Clear history</button>
+  </div>
+</div>
+
+<!-- DECK MANAGEMENT -->
+<div id="view-deck" class="view">
+  <div class="deck-head">
+    <button class="btn-back" onclick="nav('/')">← Home</button>
+    <span class="lesson-num" style="font-family:var(--mono);font-size:.6rem;background:var(--accent);color:#fff;padding:2px 8px;border-radius:3px;display:inline-block">Memorization Deck</span>
+  </div>
+  <div id="deck-body"></div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" class="modal-overlay hidden" onclick="if(event.target===this)closeSettings()">
+  <div class="modal-box">
+    <div class="modal-title">
+      Settings &amp; Data
+      <button class="modal-close-x" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Current track (Track <span id="modal-track-num">—</span>)</div>
+      <div class="modal-row">
+        <div>
+          <div class="modal-row-desc">Reset practice session</div>
+          <div class="modal-row-sub">Clears in-progress answers for this track</div>
+        </div>
+        <button class="btn-m-action" onclick="resetCurrentProgress()">Reset</button>
+      </div>
+      <div class="modal-row">
+        <div>
+          <div class="modal-row-desc">Clear track history</div>
+          <div class="modal-row-sub">Removes all attempt records for this track</div>
+        </div>
+        <button class="btn-m-action btn-m-danger" onclick="resetTrackHistory()">Clear</button>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Global</div>
+      <div class="modal-row">
+        <div>
+          <div class="modal-row-desc">Clear all history</div>
+          <div class="modal-row-sub">Remove every attempt across all tracks (deck kept)</div>
+        </div>
+        <button class="btn-m-action btn-m-danger" onclick="resetAllHistory()">Clear all</button>
+      </div>
+      <div class="modal-row">
+        <div>
+          <div class="modal-row-desc">Clear memorization deck</div>
+          <div class="modal-row-sub">Remove all cards from deck (history kept)</div>
+        </div>
+        <button class="btn-m-action btn-m-danger" onclick="clearDeckFromSettings()">Clear deck</button>
+      </div>
+      <div class="modal-row">
+        <div>
+          <div class="modal-row-desc" style="color:var(--bad);font-weight:500">Reset all data</div>
+          <div class="modal-row-sub">Delete everything permanently — cannot be undone</div>
+        </div>
+        <button class="btn-m-action btn-m-danger" style="font-weight:700" onclick="resetAllData()">Reset all</button>
+      </div>
+    </div>
+    <div class="modal-data-info" id="modal-data-info"></div>
+  </div>
 </div>
 
 <script>
@@ -620,6 +811,7 @@ function route(){
   else if(path==='/review'){ renderReviewView(); show('view-review') }
   else if(path.startsWith('/shadow/')){ const t=parseInt(path.split('/')[2]); currentTrack=t; renderShadowView(); show('view-shadow') }
   else if(mRes){ currentTrack=parseInt(mRes[1]); renderResults(); show('view-results') }
+  else if(path==='/deck'){ renderDeckView(); show('view-deck') }
   else{ renderHome(); show('view-home') }
 
   window.scrollTo({top:0,behavior:'smooth'});
@@ -631,8 +823,24 @@ function show(id){ document.getElementById(id).classList.add('active') }
 function renderHome(){
   document.getElementById('topbar-sub').textContent = '40 tracks';
 
+  // Stats row
+  const d = store.load();
+  const histObj = d.history||{};
+  const tracksWithHistory = Object.keys(histObj).filter(t=>histObj[t]&&histObj[t].length>0).length;
+  const totalSessions = Object.values(histObj).reduce((s,h)=>s+(h||[]).length,0);
+  const deckStats = srs.getStats();
+  const statsEl = document.getElementById('home-stats');
+  if(statsEl){
+    statsEl.innerHTML = `
+      <div class="stat-chip"><span class="stat-chip-val">${tracksWithHistory}</span><span class="stat-chip-lbl">tracks done</span></div>
+      <div class="stat-chip"><span class="stat-chip-val">${totalSessions}</span><span class="stat-chip-lbl">sessions</span></div>
+      <div class="stat-chip clickable" onclick="nav('/deck')"><span class="stat-chip-val">${deckStats.total}</span><span class="stat-chip-lbl">cards in deck</span></div>
+      ${deckStats.due>0?`<div class="stat-chip clickable" onclick="startReview()"><span class="stat-chip-val due">${deckStats.due}</span><span class="stat-chip-lbl">due today</span></div>`:''}
+    `;
+  }
+
   // Due cards banner
-  const dueCount = srs.totalDue();
+  const dueCount = deckStats.due;
   const dueEl = document.getElementById('due-banner');
   if(dueCount>0 && dueEl){
     dueEl.style.display='flex';
@@ -643,21 +851,22 @@ function renderHome(){
     dueEl.style.display='none';
   }
 
-  // Continue button
-  const cont = document.getElementById('continue-bar');
+  // Actions: continue + deck + settings
+  const actionsEl = document.getElementById('home-actions');
   const lastTrack = getLastActiveTrack();
-  if(lastTrack){
-    const t = TRACKS[lastTrack];
-    cont.innerHTML = `<button class="continue-btn" onclick="navLesson(${lastTrack})">
-      Continue: Track ${lastTrack} — ${t.title} <span class="arrow">→</span>
-    </button>`;
-  } else {
-    cont.innerHTML = `<button class="continue-btn" onclick="navLesson(1)">
-      Start with Track 1 <span class="arrow">→</span>
-    </button>`;
+  if(actionsEl){
+    const continueBtn = lastTrack
+      ? `<button class="continue-btn" onclick="navLesson(${lastTrack})">Continue: Track ${lastTrack} — ${TRACKS[lastTrack]?.title||''} <span class="arrow">→</span></button>`
+      : `<button class="continue-btn" onclick="navLesson(1)">Start with Track 1 <span class="arrow">→</span></button>`;
+    const deckLabel = deckStats.total>0 ? `🗃 Deck (${deckStats.total})` : '🗃 Deck';
+    actionsEl.innerHTML = `
+      ${continueBtn}
+      <button class="btn-deck-home" onclick="nav('/deck')">${deckLabel}</button>
+      <button class="btn-settings-home" onclick="openSettings()">⚙ Settings</button>
+    `;
   }
 
-  // Grid
+  // Track grid
   const grid = document.getElementById('track-grid');
   grid.innerHTML = Object.entries(TRACKS).map(([t,track])=>{
     const best = store.getBestScore(t);
@@ -738,7 +947,13 @@ function renderPractice(){
   document.getElementById('topbar-sub').textContent = `Track ${t} — Practice`;
   document.getElementById('prac-track-label').textContent = `Track ${t}: ${track.title}`;
   document.getElementById('comp-next-btn').style.display = t < 40 ? '' : 'none';
+  currentMode = 'read';
   loadAutoplay();
+  // Sync mode buttons
+  ['read','listen'].forEach(m=>{
+    const btn=document.getElementById('mode-'+m);
+    if(btn) btn.classList.toggle('active', m==='read');
+  });
 
   // Load saved progress
   const saved = store.getProgress(t);
@@ -989,6 +1204,37 @@ const srs = {
     });
   },
 
+  addSingleCard(t, idx, score='ok'){
+    this._patch(d=>{
+      if(!d.deck) d.deck=[];
+      if(!d.srs) d.srs={};
+      const id=`t${t}_${idx}`;
+      if(d.deck.includes(id)) return;
+      d.deck.push(id);
+      const dueIn = score==='bad' ? 0 : 1;
+      d.srs[id]={ interval:1, easeFactor:2.5, repetitions:0, lapses:0,
+                  dueDate:getDateStr(dueIn), addedDate:todayStr() };
+    });
+  },
+
+  hasCard(id){ return this._get().deck.includes(id); },
+
+  removeCard(id){
+    this._patch(d=>{
+      if(d.deck) d.deck=d.deck.filter(x=>x!==id);
+      if(d.srs) delete d.srs[id];
+    });
+  },
+
+  getStats(){
+    const {deck,cards}=this._get();
+    const today=todayStr();
+    const due=deck.filter(id=>{ const c=cards[id]; return c&&c.dueDate<=today; }).length;
+    const newCards=deck.filter(id=>{ const c=cards[id]; return c&&c.repetitions===0; }).length;
+    const learned=deck.filter(id=>{ const c=cards[id]; return c&&c.repetitions>1; }).length;
+    return { total:deck.length, due, newCards, learned };
+  },
+
   deckSize(){ return this._get().deck.length; },
   hasTrack(t){ const {deck}=this._get(); return deck.some(id=>id.startsWith(`t${t}_`)); },
   totalDue(){ return this.getDue().length; },
@@ -1189,7 +1435,6 @@ function setMode(mode){
     const btn = document.getElementById('mode-'+m);
     if(btn) btn.classList.toggle('active', m===mode);
   });
-  // shadow has no persistent toggle — it navigates away
   const listEl = document.getElementById('ex-list');
   if(listEl){
     const exercises = EXERCISES[String(currentTrack)]||[];
@@ -1204,6 +1449,9 @@ function buildExCard(ex, i){
   const badge = ex.c ? '<span class="cbadge">challenge</span>' : '';
   const saved_result = practiceState.scores?.[i];
   const answered = saved_result != null;
+  const cardId = `t${currentTrack}_${i}`;
+  const inDeck = srs.hasCard(cardId);
+  const deckBtnHtml = `<button class="btn-add-card${inDeck?' in-deck':''}" id="dkbtn-${eid}" onclick="toggleCardInDeck('dkbtn-${eid}',${currentTrack},${i})" title="${inDeck?'Already in deck':'Add this card to memorization deck'}">${inDeck?'✓ In deck':'+ Deck'}</button>`;
   const inpCls = answered ? ` ${saved_result}` : '';
   const ansDsp = answered ? 'flex' : 'none';
   const chkMap = {ok:'✓ correct',near:'~ close',bad:'✗ wrong',skip:'— skipped'};
@@ -1250,6 +1498,7 @@ function buildExCard(ex, i){
     <span class="ans-lbl">Answer:</span>
     <span class="ans-txt">${ex.fr}</span>
     <span class="chk${chkCls}" id="c-${eid}">${chkTxt}</span>
+    ${deckBtnHtml}
   </div>
 </div>`;
   }
@@ -1278,6 +1527,7 @@ function buildExCard(ex, i){
     <span class="ans-lbl">Answer:</span>
     <span class="ans-txt">${ex.fr}</span>
     <span class="chk${chkCls}" id="c-${eid}">${chkTxt}</span>
+    ${deckBtnHtml}
   </div>
 </div>`;
 }
@@ -1676,6 +1926,12 @@ function addTrackToDeck(){
   btn.textContent = '✓ Added to deck';
   btn.classList.add('added');
   btn.disabled = true;
+  // Refresh per-card deck buttons
+  const exercises = EXERCISES[String(currentTrack)] || [];
+  exercises.forEach((_,i)=>{
+    const dkbtn = document.getElementById(`dkbtn-e${i}`);
+    if(dkbtn){ dkbtn.textContent='✓ In deck'; dkbtn.classList.add('in-deck'); }
+  });
 }
 
 function pctToStars(pct){
@@ -1683,6 +1939,159 @@ function pctToStars(pct){
   if(pct >= 70) return '★★☆';
   if(pct >= 50) return '★☆☆';
   return '☆☆☆';
+}
+
+// ── PER-CARD DECK TOGGLE ─────────────────────────────────────────────────────
+function toggleCardInDeck(btnId, t, i){
+  const btn = document.getElementById(btnId);
+  if(!btn || btn.classList.contains('in-deck')) return;
+  const score = practiceState.scores?.[i] || 'ok';
+  srs.addSingleCard(t, i, score);
+  btn.textContent = '✓ In deck';
+  btn.classList.add('in-deck');
+  btn.title = 'Already in deck';
+}
+
+// ── DECK VIEW ────────────────────────────────────────────────────────────────
+function renderDeckView(){
+  document.getElementById('topbar-sub').textContent = 'Memorization Deck';
+  const {deck, cards} = srs._get();
+  const today = todayStr();
+  const stats = srs.getStats();
+
+  const filterEl = document.getElementById('deck-filter-track');
+  const filterTrack = filterEl ? filterEl.value : 'all';
+
+  const filtered = filterTrack === 'all' ? deck
+    : deck.filter(id=>{ const [t]=parseCardId(id); return String(t)===filterTrack; });
+
+  const trackNums = [...new Set(deck.map(id=>parseCardId(id)[0]))].sort((a,b)=>a-b);
+  const trackOptions = trackNums.map(t=>`<option value="${t}"${filterTrack===String(t)?'selected':''}>Track ${t}: ${(TRACKS[t]||{}).title||''}</option>`).join('');
+
+  const cardsHTML = filtered.length ? filtered.map(id=>{
+    const [t, idx] = parseCardId(id);
+    const ex = EXERCISES[String(t)]?.[idx];
+    if(!ex) return '';
+    const card = cards[id] || {};
+    const isDue = card.dueDate && card.dueDate <= today;
+    const isNew = !card.repetitions || card.repetitions === 0;
+    const isLearned = card.repetitions > 1;
+    const dueLabel = isDue ? 'due now' : card.dueDate ? `due ${card.dueDate}` : 'new';
+    const dueCls = isDue ? ' due' : isNew ? ' new-card' : isLearned ? ' learned' : '';
+    return `<div class="deck-card-item${isDue?' due-today':''}">
+      <span class="deck-track-tag">T${t}</span>
+      <div class="deck-card-en">${ex.en}</div>
+      <div class="deck-card-fr">${ex.fr}</div>
+      <div class="deck-card-meta">
+        <span class="d-chip${dueCls}">${dueLabel}</span>
+        <span class="d-chip">${isNew?'new':'int: '+(card.interval||1)+'d'}</span>
+        ${card.lapses>0?`<span class="d-chip">lapses: ${card.lapses}</span>`:''}
+      </div>
+      <button class="btn-rm-card" onclick="removeCardAndRefresh('${id}')">remove</button>
+    </div>`;
+  }).join('') : `<div class="deck-empty">No cards${filterTrack!=='all'?' for this track':' in deck yet'}.<br>Add cards during practice using the <strong>+ Deck</strong> button on each exercise.</div>`;
+
+  document.getElementById('deck-body').innerHTML = `
+    <div class="deck-stats-row">
+      <div class="deck-stat due"><span class="deck-stat-val">${stats.due}</span><span class="deck-stat-lbl">Due today</span></div>
+      <div class="deck-stat new-cards"><span class="deck-stat-val">${stats.newCards}</span><span class="deck-stat-lbl">New</span></div>
+      <div class="deck-stat"><span class="deck-stat-val">${stats.learned}</span><span class="deck-stat-lbl">Learned</span></div>
+      <div class="deck-stat"><span class="deck-stat-val">${stats.total}</span><span class="deck-stat-lbl">Total cards</span></div>
+    </div>
+    <div class="deck-top-actions">
+      ${stats.due>0
+        ? `<button class="continue-btn" onclick="startReview()">Review ${stats.due} due card${stats.due===1?'':'s'} →</button>`
+        : `<span style="font-family:var(--mono);font-size:.72rem;color:var(--ok)">✓ No cards due today</span>`}
+    </div>
+    <div class="deck-filter">
+      <span class="deck-filter-lbl">Filter</span>
+      <select class="deck-filter-sel" id="deck-filter-track" onchange="renderDeckView()">
+        <option value="all"${filterTrack==='all'?' selected':''}>All tracks (${deck.length})</option>
+        ${trackOptions}
+      </select>
+      <button class="btn-sec btn-reset" style="margin-left:auto;font-size:.64rem"
+        onclick="if(confirm('Remove all ${deck.length} cards from deck?')){clearDeck();}">🗑 Clear all</button>
+    </div>
+    <div class="deck-card-list">${cardsHTML}</div>
+  `;
+}
+
+function removeCardAndRefresh(id){
+  srs.removeCard(id);
+  renderDeckView();
+}
+
+function clearDeck(){
+  const d = store.load();
+  d.deck = []; d.srs = {};
+  store.save(d);
+  renderDeckView();
+}
+
+// ── SETTINGS MODAL ───────────────────────────────────────────────────────────
+function openSettings(){
+  document.querySelectorAll('#modal-track-num').forEach(el=>el.textContent=currentTrack);
+  try{
+    const raw = localStorage.getItem('lt_fr_v1')||'';
+    const kb = Math.round(raw.length/1024*10)/10;
+    const s = srs.getStats();
+    document.getElementById('modal-data-info').innerHTML =
+      `Storage: ~${kb} KB &nbsp;·&nbsp; ${s.total} deck cards &nbsp;·&nbsp; ${s.due} due today`;
+  }catch(e){}
+  document.getElementById('settings-modal').classList.remove('hidden');
+}
+
+function closeSettings(){
+  document.getElementById('settings-modal').classList.add('hidden');
+}
+
+function resetCurrentProgress(){
+  if(!confirm(`Reset in-progress answers for Track ${currentTrack}?`)) return;
+  store.clearProgress(currentTrack);
+  practiceState = {ok:0,near:0,bad:0,done:0,scores:{},inputs:{}};
+  closeSettings();
+  if(getPath().includes('/practice')) renderPractice();
+}
+
+function resetTrackHistory(){
+  if(!confirm(`Clear all attempt history for Track ${currentTrack}?`)) return;
+  const d = store.load();
+  if(d.history) delete d.history[String(currentTrack)];
+  store.save(d);
+  closeSettings();
+}
+
+function resetAllHistory(){
+  if(!confirm('Clear ALL practice history across all tracks?\nYour deck will be kept.')) return;
+  const d = store.load();
+  d.history = {};
+  store.save(d);
+  closeSettings();
+  if(getPath()==='/') renderHome();
+}
+
+function clearDeckFromSettings(){
+  if(!confirm('Remove all cards from your memorization deck?')) return;
+  const d = store.load();
+  d.deck = []; d.srs = {};
+  store.save(d);
+  closeSettings();
+  if(getPath()==='/') renderHome();
+}
+
+function resetAllData(){
+  if(!confirm('RESET ALL DATA?\n\nThis permanently deletes all progress, history, and your memorization deck.\n\nThis cannot be undone.')) return;
+  try{ localStorage.removeItem('lt_fr_v1'); }catch(e){}
+  closeSettings();
+  nav('/');
+}
+
+function clearCurrentTrackHistory(){
+  if(!confirm(`Clear all attempt history for Track ${currentTrack}?`)) return;
+  const d = store.load();
+  if(d.history) delete d.history[String(currentTrack)];
+  store.save(d);
+  renderResults();
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
