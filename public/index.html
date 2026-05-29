@@ -2020,10 +2020,11 @@ function pctToStars(pct){
 }
 
 // ── DECK SELECTION (checkboxes) ──────────────────────────────────────────────
+function isExRevealed(idx){ return practiceState.scores?.[idx] != null; }
+
 function updateDeckSelectionCount(){
   const allChks = [...document.querySelectorAll('.deck-chk:not(:disabled)')].filter(chk=>{
-    const row = chk.closest('.ex-ans');
-    return row && row.style.display !== 'none';
+    return isExRevealed(parseInt(chk.dataset.idx));
   });
   const checked = allChks.filter(c=>c.checked);
   const count = checked.length;
@@ -2045,16 +2046,14 @@ function updateDeckSelectionCount(){
 
 function toggleSelectAll(checked){
   document.querySelectorAll('.deck-chk:not(:disabled)').forEach(chk=>{
-    const row = chk.closest('.ex-ans');
-    if(row && row.style.display !== 'none') chk.checked = checked;
+    if(isExRevealed(parseInt(chk.dataset.idx))) chk.checked = checked;
   });
   updateDeckSelectionCount();
 }
 
 function addSelectedToDeck(){
   const toAdd = [...document.querySelectorAll('.deck-chk:checked:not(:disabled)')].filter(chk=>{
-    const row = chk.closest('.ex-ans');
-    return row && row.style.display !== 'none';
+    return isExRevealed(parseInt(chk.dataset.idx));
   });
   toAdd.forEach(chk=>{
     const idx = parseInt(chk.dataset.idx);
