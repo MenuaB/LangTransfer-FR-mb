@@ -503,6 +503,46 @@ select.deck-filter-sel{font-family:var(--mono);font-size:.73rem;padding:4px 8px;
 /* ── RESULTS EXTRA ── */
 .results-foot{display:flex;gap:.6rem;margin-top:1.2rem;flex-wrap:wrap;align-items:center}
 
+/* ── MODE DROPDOWN ── */
+.mode-menu-wrap{position:relative}
+.mode-menu-btn{font-family:var(--mono);font-size:.72rem;padding:5px 12px;border-radius:6px;
+  border:1.5px solid var(--border);background:#fff;cursor:pointer;
+  transition:all .15s;display:flex;align-items:center;gap:.4rem}
+.mode-menu-btn:hover{border-color:var(--accent);color:var(--accent)}
+.mode-dropdown{position:absolute;top:calc(100% + 4px);left:0;
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  box-shadow:0 4px 20px rgba(0,0,0,.12);z-index:100;min-width:210px;overflow:hidden}
+.mode-dropdown.hidden{display:none}
+.mode-dropdown button{display:block;width:100%;text-align:left;padding:.52rem .85rem;
+  font-family:var(--mono);font-size:.72rem;background:none;border:none;cursor:pointer;
+  transition:background .1s;border-bottom:1px solid var(--border)}
+.mode-dropdown button:last-child{border-bottom:none}
+.mode-dropdown button:hover{background:var(--acc-lt);color:var(--accent)}
+.mode-dropdown button span{display:block;font-size:.59rem;color:var(--muted);
+  margin-top:1px;font-family:var(--serif);font-style:italic;font-weight:normal}
+
+/* ── DECK CHECKBOXES ── */
+.deck-chk-wrap{display:flex;align-items:center;gap:4px;margin-left:auto;flex-shrink:0;cursor:pointer}
+.deck-chk-wrap input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;cursor:pointer;flex-shrink:0}
+.deck-chk-wrap input[type=checkbox]:disabled{cursor:default}
+.deck-chk-label{font-family:var(--mono);font-size:.59rem;color:var(--muted);white-space:nowrap;user-select:none}
+.deck-chk-wrap:has(input:checked:not(:disabled)) .deck-chk-label{color:var(--accent)}
+.deck-chk-wrap:has(input:disabled) .deck-chk-label{color:var(--ok)}
+
+/* ── DECK SELECT BAR ── */
+.deck-select-bar{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;
+  background:var(--amb-lt);border:1px solid #d9c4aa;border-radius:8px;
+  padding:.5rem .85rem;margin-top:.8rem}
+.deck-sel-all{display:flex;align-items:center;gap:.35rem;cursor:pointer;
+  font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.deck-sel-all input[type=checkbox]{accent-color:var(--accent);width:13px;height:13px;cursor:pointer}
+.deck-sel-count{font-family:var(--mono);font-size:.68rem;color:var(--accent);font-weight:600;min-width:6ch}
+.btn-add-selected{font-family:var(--mono);font-size:.7rem;padding:5px 12px;border-radius:6px;
+  cursor:pointer;border:1.5px solid var(--accent);background:var(--accent);
+  color:#fff;transition:all .12s;margin-left:auto;white-space:nowrap}
+.btn-add-selected:hover:not(:disabled){background:#1e4029}
+.btn-add-selected:disabled{background:#bbb;border-color:#bbb;cursor:default}
+
 @media(max-width:480px){
   .deck-card-fr{display:none}
   .modal-box{padding:1.1rem}
@@ -605,10 +645,16 @@ select.deck-filter-sel{font-family:var(--mono);font-size:.73rem;padding:4px 8px;
     <button class="ch" onclick="ins('À')">À</button>
   </div>
   <div class="mode-bar">
-    <span class="mode-bar-label">Mode</span>
-    <button id="mode-read"   class="mode-btn active" onclick="setMode('read')">📖 Read</button>
-    <button id="mode-listen" class="mode-btn"        onclick="setMode('listen')">🎧 Listen</button>
-    <button                  class="mode-btn"        onclick="startShadow(currentTrack)">🎙 Shadow</button>
+    <div class="mode-menu-wrap">
+      <button class="mode-menu-btn" id="mode-menu-btn" onclick="toggleModeMenu()">
+        <span id="mode-label">📖 Read</span> <span style="font-size:.6em;opacity:.55">▾</span>
+      </button>
+      <div class="mode-dropdown hidden" id="mode-dropdown">
+        <button onclick="pickMode('read')">📖 Read <span>type from English prompt</span></button>
+        <button onclick="pickMode('listen')">🎧 Listen <span>hear French first, toggle English</span></button>
+        <button onclick="pickMode('shadow')">🎙 Shadow <span>card-by-card speaking practice</span></button>
+      </div>
+    </div>
     <div class="autoplay-toggle" style="margin-left:auto">
       <label><input type="checkbox" id="autoplay-chk" onchange="saveAutoplay(this.checked)"> Auto-play FR</label>
     </div>
@@ -618,6 +664,14 @@ select.deck-filter-sel{font-family:var(--mono);font-size:.73rem;padding:4px 8px;
     <div class="prog-txt" id="prac-prog-txt">0 / 0 revealed</div>
   </div>
   <div class="ex-list" id="ex-list"></div>
+  <div class="deck-select-bar" id="deck-select-bar">
+    <label class="deck-sel-all">
+      <input type="checkbox" id="deck-chk-all" onchange="toggleSelectAll(this.checked)">
+      <span>Select all</span>
+    </label>
+    <span class="deck-sel-count" id="deck-sel-count"></span>
+    <button class="btn-add-selected" id="btn-add-selected" onclick="addSelectedToDeck()" disabled>+ Add to deck</button>
+  </div>
   <div class="prac-foot">
     <button class="btn-sec btn-reset" onclick="resetPractice()">↺ Reset</button>
     <button class="btn-sec btn-reveal-all" onclick="revealAll()">Reveal all</button>
@@ -949,11 +1003,8 @@ function renderPractice(){
   document.getElementById('comp-next-btn').style.display = t < 40 ? '' : 'none';
   currentMode = 'read';
   loadAutoplay();
-  // Sync mode buttons
-  ['read','listen'].forEach(m=>{
-    const btn=document.getElementById('mode-'+m);
-    if(btn) btn.classList.toggle('active', m==='read');
-  });
+  const lbl = document.getElementById('mode-label');
+  if(lbl) lbl.textContent = '📖 Read';
 
   // Load saved progress
   const saved = store.getProgress(t);
@@ -1024,6 +1075,7 @@ function doReveal(idx){
   updateScoreDisplay();
   store.saveProgress(t, practiceState);
 
+  updateDeckSelectionCount();
   if(practiceState.done === exercises.length) setTimeout(()=>showCompletion(true), 450);
 }
 
@@ -1431,15 +1483,27 @@ let currentMode = 'read'; // 'read' | 'listen'
 
 function setMode(mode){
   currentMode = mode;
-  ['read','listen'].forEach(m=>{
-    const btn = document.getElementById('mode-'+m);
-    if(btn) btn.classList.toggle('active', m===mode);
-  });
   const listEl = document.getElementById('ex-list');
   if(listEl){
     const exercises = EXERCISES[String(currentTrack)]||[];
     listEl.innerHTML = exercises.map((ex,i)=>buildExCard(ex,i)).join('');
   }
+  updateDeckSelectionCount();
+}
+
+function toggleModeMenu(){
+  const dd = document.getElementById('mode-dropdown');
+  if(dd) dd.classList.toggle('hidden');
+}
+
+function pickMode(mode){
+  if(mode === 'shadow'){ startShadow(currentTrack); return; }
+  const labels = { read:'📖 Read', listen:'🎧 Listen' };
+  const lbl = document.getElementById('mode-label');
+  if(lbl) lbl.textContent = labels[mode] || mode;
+  const dd = document.getElementById('mode-dropdown');
+  if(dd) dd.classList.add('hidden');
+  setMode(mode);
 }
 
 // ── EXERCISE CARD BUILDER (mode-aware) ───────────────────────────────────
@@ -1451,7 +1515,7 @@ function buildExCard(ex, i){
   const answered = saved_result != null;
   const cardId = `t${currentTrack}_${i}`;
   const inDeck = srs.hasCard(cardId);
-  const deckBtnHtml = `<button class="btn-add-card${inDeck?' in-deck':''}" id="dkbtn-${eid}" onclick="toggleCardInDeck('dkbtn-${eid}',${currentTrack},${i})" title="${inDeck?'Already in deck':'Add this card to memorization deck'}">${inDeck?'✓ In deck':'+ Deck'}</button>`;
+  const deckChkHtml = `<label class="deck-chk-wrap" title="${inDeck?'Already in deck':'Select to add to deck'}"><input type="checkbox" class="deck-chk" id="dkchk-${eid}" data-idx="${i}" onchange="updateDeckSelectionCount()"${inDeck?' checked disabled':''}><span class="deck-chk-label">${inDeck?'✓ deck':'deck'}</span></label>`;
   const inpCls = answered ? ` ${saved_result}` : '';
   const ansDsp = answered ? 'flex' : 'none';
   const chkMap = {ok:'✓ correct',near:'~ close',bad:'✗ wrong',skip:'— skipped'};
@@ -1471,8 +1535,8 @@ function buildExCard(ex, i){
     <button class="btn-listen-play" data-text="${frEsc}" data-lang="fr-FR"
       onclick="speakBtn(this)" title="Hear the French sentence">▶ Hear French</button>
     <button class="btn-reveal-en${answered?' done':''}" id="shen-${eid}"
-      onclick="revealEnglish('${eid}','${enEsc}')"
-      ${answered?'disabled':''}>Show English</button>
+      data-en="${enEsc}"
+      onclick="toggleEnglish('${eid}')">${answered?'Hide English':'Show English'}</button>
     ${badge}
   </div>
   <div class="ex-en" style="margin-bottom:.5rem">
@@ -1498,7 +1562,7 @@ function buildExCard(ex, i){
     <span class="ans-lbl">Answer:</span>
     <span class="ans-txt">${ex.fr}</span>
     <span class="chk${chkCls}" id="c-${eid}">${chkTxt}</span>
-    ${deckBtnHtml}
+    ${deckChkHtml}
   </div>
 </div>`;
   }
@@ -1527,16 +1591,26 @@ function buildExCard(ex, i){
     <span class="ans-lbl">Answer:</span>
     <span class="ans-txt">${ex.fr}</span>
     <span class="chk${chkCls}" id="c-${eid}">${chkTxt}</span>
-    ${deckBtnHtml}
+    ${deckChkHtml}
   </div>
 </div>`;
 }
 
-function revealEnglish(eid, enText){
+function toggleEnglish(eid){
   const span = document.getElementById('en-'+eid);
   const btn  = document.getElementById('shen-'+eid);
-  if(span){ span.textContent = decodeURIComponent(enText.replace(/&#39;/g,"'")); span.classList.add('revealed'); }
-  if(btn) { btn.classList.add('done'); btn.disabled=true; }
+  if(!span || !btn) return;
+  const visible = span.classList.contains('revealed');
+  if(visible){
+    span.classList.remove('revealed');
+    btn.textContent = 'Show English';
+    btn.classList.remove('done');
+  } else {
+    span.textContent = btn.dataset.en || span.textContent;
+    span.classList.add('revealed');
+    btn.textContent = 'Hide English';
+    btn.classList.add('done');
+  }
 }
 
 // ── VOICE INPUT (SpeechRecognition) ──────────────────────────────────────
@@ -1926,12 +2000,16 @@ function addTrackToDeck(){
   btn.textContent = '✓ Added to deck';
   btn.classList.add('added');
   btn.disabled = true;
-  // Refresh per-card deck buttons
+  // Mark all checkboxes as in-deck
   const exercises = EXERCISES[String(currentTrack)] || [];
   exercises.forEach((_,i)=>{
-    const dkbtn = document.getElementById(`dkbtn-e${i}`);
-    if(dkbtn){ dkbtn.textContent='✓ In deck'; dkbtn.classList.add('in-deck'); }
+    const chk = document.getElementById(`dkchk-e${i}`);
+    if(chk){ chk.checked=true; chk.disabled=true; }
+    const lbl = document.querySelector(`#dkchk-e${i} ~ .deck-chk-label`) ||
+                document.querySelector(`label:has(#dkchk-e${i}) .deck-chk-label`);
+    if(lbl) lbl.textContent='✓ deck';
   });
+  updateDeckSelectionCount();
 }
 
 function pctToStars(pct){
@@ -1941,15 +2019,61 @@ function pctToStars(pct){
   return '☆☆☆';
 }
 
-// ── PER-CARD DECK TOGGLE ─────────────────────────────────────────────────────
-function toggleCardInDeck(btnId, t, i){
-  const btn = document.getElementById(btnId);
-  if(!btn || btn.classList.contains('in-deck')) return;
-  const score = practiceState.scores?.[i] || 'ok';
-  srs.addSingleCard(t, i, score);
-  btn.textContent = '✓ In deck';
-  btn.classList.add('in-deck');
-  btn.title = 'Already in deck';
+// ── DECK SELECTION (checkboxes) ──────────────────────────────────────────────
+function updateDeckSelectionCount(){
+  const allChks = [...document.querySelectorAll('.deck-chk:not(:disabled)')].filter(chk=>{
+    const row = chk.closest('.ex-ans');
+    return row && row.style.display !== 'none';
+  });
+  const checked = allChks.filter(c=>c.checked);
+  const count = checked.length;
+
+  const countEl = document.getElementById('deck-sel-count');
+  const addBtn  = document.getElementById('btn-add-selected');
+  const allChk  = document.getElementById('deck-chk-all');
+
+  if(countEl) countEl.textContent = count > 0 ? `${count} selected` : '';
+  if(addBtn)  addBtn.disabled = count === 0;
+
+  if(allChk){
+    if(allChks.length === 0){ allChk.checked=false; allChk.indeterminate=false; }
+    else if(count === 0)    { allChk.checked=false; allChk.indeterminate=false; }
+    else if(count === allChks.length){ allChk.checked=true; allChk.indeterminate=false; }
+    else                    { allChk.checked=false; allChk.indeterminate=true; }
+  }
+}
+
+function toggleSelectAll(checked){
+  document.querySelectorAll('.deck-chk:not(:disabled)').forEach(chk=>{
+    const row = chk.closest('.ex-ans');
+    if(row && row.style.display !== 'none') chk.checked = checked;
+  });
+  updateDeckSelectionCount();
+}
+
+function addSelectedToDeck(){
+  const toAdd = [...document.querySelectorAll('.deck-chk:checked:not(:disabled)')].filter(chk=>{
+    const row = chk.closest('.ex-ans');
+    return row && row.style.display !== 'none';
+  });
+  toAdd.forEach(chk=>{
+    const idx = parseInt(chk.dataset.idx);
+    const score = practiceState.scores?.[idx] || 'ok';
+    srs.addSingleCard(currentTrack, idx, score);
+    chk.disabled = true;
+    const lbl = chk.closest('.deck-chk-wrap')?.querySelector('.deck-chk-label');
+    if(lbl) lbl.textContent = '✓ deck';
+    chk.closest('.deck-chk-wrap')?.setAttribute('title','Already in deck');
+  });
+  // reset select-all
+  const allChk = document.getElementById('deck-chk-all');
+  if(allChk){ allChk.checked=false; allChk.indeterminate=false; }
+  updateDeckSelectionCount();
+  // update completion button if whole track is now in deck
+  const addBtn = document.getElementById('comp-add-deck');
+  if(addBtn && srs.hasTrack(currentTrack)){
+    addBtn.textContent='✓ Already in deck'; addBtn.classList.add('added'); addBtn.disabled=true;
+  }
 }
 
 // ── DECK VIEW ────────────────────────────────────────────────────────────────
@@ -2108,6 +2232,15 @@ async function init(){
       '<p style="color:#a83232">Failed to load data. Check your connection.</p>';
   }
 }
+
+// Close mode dropdown on outside click
+document.addEventListener('click',e=>{
+  const dd = document.getElementById('mode-dropdown');
+  const btn = document.getElementById('mode-menu-btn');
+  if(dd && !dd.classList.contains('hidden') && !btn?.contains(e.target) && !dd.contains(e.target)){
+    dd.classList.add('hidden');
+  }
+});
 
 // Keyboard navigation (not while typing)
 document.addEventListener('keydown',e=>{
