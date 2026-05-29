@@ -2020,14 +2020,21 @@ function pctToStars(pct){
 }
 
 // ── DECK SELECTION (checkboxes) ──────────────────────────────────────────────
-function isExRevealed(idx){ return practiceState.scores?.[idx] != null; }
+function getDeckChkEls(){
+  // Return [{el, idx}] for all revealed, non-disabled exercise checkboxes
+  const exs = EXERCISES[String(currentTrack)] || [];
+  const result = [];
+  exs.forEach((_,i)=>{
+    const el = document.getElementById(`dkchk-e${i}`);
+    if(el && practiceState.scores?.[i] != null) result.push({el, i});
+  });
+  return result;
+}
 
 function updateDeckSelectionCount(){
-  const allChks = [...document.querySelectorAll('.deck-chk:not(:disabled)')].filter(chk=>{
-    return isExRevealed(parseInt(chk.dataset.idx));
-  });
-  const checked = allChks.filter(c=>c.checked);
-  const count = checked.length;
+  const items = getDeckChkEls();
+  const count = items.filter(({el})=> el.checked && !el.disabled).length;
+  const selectable = items.filter(({el})=> !el.disabled).length;
 
   const countEl = document.getElementById('deck-sel-count');
   const addBtn  = document.getElementById('btn-add-selected');
@@ -2037,41 +2044,36 @@ function updateDeckSelectionCount(){
   if(addBtn)  addBtn.disabled = count === 0;
 
   if(allChk){
-    if(allChks.length === 0){ allChk.checked=false; allChk.indeterminate=false; }
-    else if(count === 0)    { allChk.checked=false; allChk.indeterminate=false; }
-    else if(count === allChks.length){ allChk.checked=true; allChk.indeterminate=false; }
-    else                    { allChk.checked=false; allChk.indeterminate=true; }
+    if(selectable === 0)         { allChk.checked=false; allChk.indeterminate=false; }
+    else if(count === 0)         { allChk.checked=false; allChk.indeterminate=false; }
+    else if(count === selectable){ allChk.checked=true;  allChk.indeterminate=false; }
+    else                         { allChk.checked=false; allChk.indeterminate=true;  }
   }
 }
 
 function toggleSelectAll(checked){
-  document.querySelectorAll('.deck-chk:not(:disabled)').forEach(chk=>{
-    if(isExRevealed(parseInt(chk.dataset.idx))) chk.checked = checked;
+  getDeckChkEls().forEach(({el})=>{
+    if(!el.disabled) el.checked = checked;
   });
   updateDeckSelectionCount();
 }
 
 function addSelectedToDeck(){
-  const toAdd = [...document.querySelectorAll('.deck-chk:checked:not(:disabled)')].filter(chk=>{
-    return isExRevealed(parseInt(chk.dataset.idx));
-  });
-  toAdd.forEach(chk=>{
-    const idx = parseInt(chk.dataset.idx);
-    const score = practiceState.scores?.[idx] || 'ok';
-    srs.addSingleCard(currentTrack, idx, score);
-    chk.disabled = true;
-    const lbl = chk.closest('.deck-chk-wrap')?.querySelector('.deck-chk-label');
+  getDeckChkEls().forEach(({el, i})=>{
+    if(!el.checked || el.disabled) return;
+    const score = practiceState.scores?.[i] || 'ok';
+    srs.addSingleCard(currentTrack, i, score);
+    el.checked = true;
+    el.disabled = true;
+    const lbl = el.closest('.deck-chk-wrap')?.querySelector('.deck-chk-label');
     if(lbl) lbl.textContent = '✓ deck';
-    chk.closest('.deck-chk-wrap')?.setAttribute('title','Already in deck');
   });
-  // reset select-all
   const allChk = document.getElementById('deck-chk-all');
   if(allChk){ allChk.checked=false; allChk.indeterminate=false; }
   updateDeckSelectionCount();
-  // update completion button if whole track is now in deck
-  const addBtn = document.getElementById('comp-add-deck');
-  if(addBtn && srs.hasTrack(currentTrack)){
-    addBtn.textContent='✓ Already in deck'; addBtn.classList.add('added'); addBtn.disabled=true;
+  const compBtn = document.getElementById('comp-add-deck');
+  if(compBtn && srs.hasTrack(currentTrack)){
+    compBtn.textContent='✓ Already in deck'; compBtn.classList.add('added'); compBtn.disabled=true;
   }
 }
 
