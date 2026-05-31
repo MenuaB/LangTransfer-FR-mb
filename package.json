@@ -1,0 +1,12 @@
+{
+  "name": "lt-french-transfer-app",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "npm run validate:data && npm run test && npm run check:js",
+    "validate:data": "node scripts/validate-data.mjs",
+    "test": "node --test",
+    "check:js": "node --check public/js/app.js && node --check public/js/dom.js && node --check public/js/scoring.js && node --check public/js/srs.js && node --check public/js/speech.js && node --check public/js/store.js"
+  }
+}
