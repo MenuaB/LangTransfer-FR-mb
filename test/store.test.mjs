@@ -7,9 +7,14 @@ test('validateStoreData accepts minimal exported progress', () => {
   assert.deepEqual(data.deck, ['p1']);
   assert.equal(data.preferences.autoplay, true);
   assert.equal(data.preferences.strictAccents, false);
+  assert.equal(data.preferences.sessionMix, 'balanced');
+  assert.equal(data.unlockedTrack, 1);
+  assert.equal(data.dailyGoalMinutes, 20);
+  assert.deepEqual(data.sessionHistory, []);
 });
 
 test('validateStoreData rejects malformed imports', () => {
   assert.throws(() => validateStoreData({ deck: {} }), /Deck must be an array/);
   assert.throws(() => validateStoreData([]), /JSON object/);
+  assert.throws(() => validateStoreData({ unlockedTrack: 0 }), /Unlocked track/);
 });

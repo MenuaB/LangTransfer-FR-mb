@@ -19,6 +19,19 @@ for (const id of trackIds) {
   assert.equal(typeof track.grammar, 'string', `Track ${id} needs grammar.`);
   assert(track.grammar.trim(), `Track ${id} grammar cannot be empty.`);
   assert(!/<(?!\/?(em|strong|b|i|br)\b)[^>]+>/i.test(track.grammar), `Track ${id} grammar contains unsupported HTML.`);
+  if ('concepts' in track) {
+    assert(Array.isArray(track.concepts), `Track ${id} concepts must be an array.`);
+    assert(track.concepts.every(v => typeof v === 'string' && v.trim()), `Track ${id} concepts must contain non-empty strings.`);
+  }
+  if ('notes' in track) {
+    assert(track.notes && typeof track.notes === 'object' && !Array.isArray(track.notes), `Track ${id} notes must be an object.`);
+    for (const key of ['build', 'writing', 'traps']) {
+      if (key in track.notes) {
+        assert(Array.isArray(track.notes[key]), `Track ${id} notes.${key} must be an array.`);
+        assert(track.notes[key].every(v => typeof v === 'string' && v.trim()), `Track ${id} notes.${key} must contain non-empty strings.`);
+      }
+    }
+  }
   assert(Array.isArray(track.words) && track.words.length > 0, `Track ${id} needs words.`);
   assert(Array.isArray(track.sentences) && track.sentences.length > 0, `Track ${id} needs sentences.`);
   for (const [idx, pair] of track.words.entries()) {
@@ -41,7 +54,7 @@ for (const id of trackIds) {
       if (ex.c) challengeCount += 1;
     }
     if ('hint' in ex) assert.equal(typeof ex.hint, 'string', `Exercise ${id}.${idx} hint must be a string.`);
-    for (const key of ['answers', 'alternates']) {
+    for (const key of ['answers', 'alternates', 'concepts', 'steps', 'writing']) {
       if (key in ex) {
         assert(Array.isArray(ex[key]), `Exercise ${id}.${idx} ${key} must be an array.`);
         assert(ex[key].every(v => typeof v === 'string' && v.trim()), `Exercise ${id}.${idx} ${key} must contain non-empty strings.`);

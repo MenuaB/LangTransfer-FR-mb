@@ -1,6 +1,16 @@
 const KEY = 'lt_fr_v2';
 const LEGACY_KEY = 'lt_fr_v1';
-const DEFAULTS = { history: {}, progress: {}, deck: [], srs: {}, preferences: { autoplay: false, strictAccents: false } };
+const DEFAULTS = {
+  history: {},
+  progress: {},
+  deck: [],
+  srs: {},
+  unlockedTrack: 1,
+  dailyGoalMinutes: 20,
+  lastSession: null,
+  sessionHistory: [],
+  preferences: { autoplay: false, strictAccents: false, sessionMix: 'balanced' }
+};
 
 function clone(value) { return JSON.parse(JSON.stringify(value)); }
 function isObject(value) { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
@@ -11,6 +21,10 @@ export function validateStoreData(data) {
   if ('progress' in data && !isObject(data.progress)) throw new Error('In-progress answers must be an object.');
   if ('deck' in data && !Array.isArray(data.deck)) throw new Error('Deck must be an array.');
   if ('srs' in data && !isObject(data.srs)) throw new Error('Review schedule must be an object.');
+  if ('unlockedTrack' in data && (!Number.isInteger(data.unlockedTrack) || data.unlockedTrack < 1)) throw new Error('Unlocked track must be a positive integer.');
+  if ('dailyGoalMinutes' in data && (!Number.isInteger(data.dailyGoalMinutes) || data.dailyGoalMinutes < 5)) throw new Error('Daily goal minutes must be an integer of at least 5.');
+  if ('lastSession' in data && data.lastSession !== null && !isObject(data.lastSession)) throw new Error('Last session must be an object or null.');
+  if ('sessionHistory' in data && !Array.isArray(data.sessionHistory)) throw new Error('Session history must be an array.');
   if ('preferences' in data && !isObject(data.preferences)) throw new Error('Preferences must be an object.');
   return mergeDefaults(data);
 }
@@ -44,5 +58,9 @@ export const store = {
   getHistory(t) { return this.load().history[String(t)] || []; },
   getBest(t) { return this.getHistory(t).reduce((best, item) => item.pct > (best?.pct ?? -1) ? item : best, null); },
   getPreferences() { return this.load().preferences; },
-  setPreference(key, value) { return this.patch(d => { d.preferences[key] = value; }); }
+  setPreference(key, value) { return this.patch(d => { d.preferences[key] = value; }); },
+  setUnlockedTrack(value) { return this.patch(d => { d.unlockedTrack = Math.max(1, Number(value) || 1); }); },
+  setDailyGoalMinutes(value) { return this.patch(d => { d.dailyGoalMinutes = Math.max(5, Number(value) || DEFAULTS.dailyGoalMinutes); }); },
+  saveLastSession(session) { return this.patch(d => { d.lastSession = session; }); },
+  addSessionResult(result) { return this.patch(d => { d.lastSession = result; d.sessionHistory.unshift(result); d.sessionHistory = d.sessionHistory.slice(0, 30); }); }
 };

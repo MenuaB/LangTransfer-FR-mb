@@ -18,7 +18,11 @@
     </button>
     <span class="topbar-status" id="topbar-status" aria-live="polite">Loading...</span>
     <nav class="topbar-actions" aria-label="Primary">
-      <button class="topbar-button" data-nav="/deck">Deck</button>
+      <button class="topbar-button" data-nav="/">Today</button>
+      <button class="topbar-button" data-nav="/tracks">Track Notes</button>
+      <button class="topbar-button" data-nav="/review">Review</button>
+      <button class="topbar-button" data-nav="/scenarios">Scenarios</button>
+      <button class="topbar-button" data-nav="/notes">Notes</button>
       <button class="topbar-button" id="settings-open" aria-haspopup="dialog">Settings</button>
     </nav>
   </header>
@@ -48,6 +52,7 @@
       </div>
       <div class="modal-section">
         <h3>Practice preferences</h3>
+        <label class="check-row">Daily goal minutes <input id="daily-goal" type="number" min="5" max="45" step="5"></label>
         <label class="check-row"><input type="checkbox" id="pref-autoplay"> Auto-play French after reveal</label>
         <label class="check-row"><input type="checkbox" id="pref-strict-accents"> Treat accent mistakes as incorrect</label>
       </div>
