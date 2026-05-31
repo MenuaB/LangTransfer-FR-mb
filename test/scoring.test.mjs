@@ -27,3 +27,8 @@ test('flags missing small structure words', () => {
   assert.equal(result.status, 'bad');
   assert.match(result.label, /Missing/);
 });
+
+test('accepts structured alternate answers', () => {
+  const result = scoreAnswer('Tu es où ?', { fr: 'Où es-tu ?', alternates: ['Tu es où ?'] });
+  assert.equal(result.status, 'ok');
+});

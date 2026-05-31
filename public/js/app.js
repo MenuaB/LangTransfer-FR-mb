@@ -1,7 +1,7 @@
 import { el, clear, byId, button, navButton } from './dom.js';
 import { store } from './store.js';
-import { scoreAnswer } from './scoring.js';
-import { srs } from './srs.js';
+import { canonicalAnswer, scoreAnswer } from './scoring.js';
+import { parseReviewId, srs } from './srs.js';
 import { speak, canRecognize, recognizeFrench } from './speech.js';
 
 const state = { tracks: {}, exercises: {}, currentTrack: 1, mode: 'guided', answers: {}, activeInput: null, review: null, focusBeforeModal: null };
@@ -24,10 +24,35 @@ function safeGrammar(html) {
   });
   return template.innerHTML;
 }
-function parseCardId(id) { const m = id.match(/^t(\d+)_(\d+)$/); return m ? [Number(m[1]), Number(m[2])] : [0,0]; }
 function progressFor(t) { const p = store.getProgress(t); const total = state.exercises[String(t)]?.length || 0; return total && p ? Math.round(Object.keys(p.answers || {}).length / total * 100) : 0; }
 function bestFor(t) { return store.getBest(t); }
 function prefs() { return store.getPreferences(); }
+function exerciseAnswer(ex) { return ex.answers || ex.alternates ? { fr: ex.fr, answers: ex.answers, alternates: ex.alternates } : ex.fr; }
+function reviewDetails(id) {
+  const parsed = parseReviewId(id);
+  if (parsed.type === 'pattern') {
+    const track = state.tracks[String(parsed.track)];
+    return {
+      ...parsed,
+      meta: `Track ${parsed.track} pattern`,
+      prompt: `Explain the transfer pattern: ${track?.title || `Track ${parsed.track}`}`,
+      answer: track?.grammar || track?.context || 'Pattern unavailable.',
+      answerHtml: track?.grammar ? safeGrammar(track.grammar) : null,
+      hint: track?.context || ''
+    };
+  }
+  if (parsed.type === 'sentence') {
+    const ex = state.exercises[String(parsed.track)]?.[parsed.index];
+    return {
+      ...parsed,
+      meta: `Track ${parsed.track} sentence`,
+      prompt: ex?.en || 'Missing exercise',
+      answer: ex?.fr || id,
+      hint: ex?.hint || state.tracks[String(parsed.track)]?.context || ''
+    };
+  }
+  return { ...parsed, meta: 'Unknown card', prompt: id, answer: 'Missing review item.', hint: '' };
+}
 
 function renderHome() {
   setStatus(`${trackIds().length} tracks`);
@@ -85,31 +110,48 @@ function renderPractice(t) {
   setStatus(`Track ${t} practice`);
   const list = exercises.map((ex, i) => exerciseCard(t, ex, i));
   screen(
-    el('div', { class: 'toolbar' }, [navButton('← Lesson', `/track/${t}`, { class: 'secondary' }), modeTabs(t), button('+ Add track to deck', { class: 'secondary', onclick: () => { srs.addTrack(t, exercises, state.answers); renderPractice(t); } })]),
+    el('div', { class: 'toolbar' }, [navButton('← Lesson', `/track/${t}`, { class: 'secondary' }), modeTabs(t), button('+ Add pattern review', { class: 'secondary', onclick: () => { srs.addTrack(t, exercises, state.answers, state.tracks[String(t)]); renderPractice(t); } })]),
     el('h1', { class: 'lesson-title', text: `Track ${t}: ${trackTitle(t)}` }),
     el('p', { class: 'muted', text: state.mode === 'guided' ? 'Pause before revealing. The goal is to reason from patterns, not memorize isolated answers.' : modeHelp() }),
     charBar(), ...list, completionPanel(t, exercises)
   );
 }
-function modeHelp(){ return state.mode === 'listen' ? 'Hear the French first, then reconstruct it and check the English.' : state.mode === 'shadow' ? 'Listen, repeat aloud, then reveal meaning and pattern.' : 'Translate the English prompt into French.'; }
+function modeHelp(){ return state.mode === 'listen' ? 'Hear the French first, type what you hear, then reveal the meaning and pattern.' : state.mode === 'shadow' ? 'Listen, repeat aloud, then reveal meaning and pattern to complete the card.' : 'Translate the English prompt into French.'; }
 function charBar(){ return el('div', { class: 'charbar', 'aria-label': 'French characters' }, ['é','è','ê','ë','à','â','î','ï','ô','ù','û','ü','ç','œ','É','À'].map(ch => button(ch, { onclick: () => { const input = state.activeInput; if (!input) return; const s=input.selectionStart; input.setRangeText(ch, s, input.selectionEnd, 'end'); input.focus(); } }))); }
 function exerciseCard(t, ex, i) {
   const saved = state.answers[i]; const revealed = Boolean(saved); const input = el('input', { value: saved?.input || '', placeholder: 'Type French here…', autocomplete: 'off', spellcheck: 'false', onfocus: e => { state.activeInput = e.target; }, onkeydown: e => { if (e.key === 'Enter') reveal(); } });
   const feedback = el('div', { class: `feedback ${saved?.status || ''}`, text: saved ? `${saved.label}: ${saved.message}` : '' });
   const card = el('article', { class: `${state.mode === 'guided' ? 'guided-card' : 'exercise'} ${revealed ? 'revealed' : ''}` });
   function reveal() {
-    const result = scoreAnswer(input.value, ex.fr, prefs()); state.answers[i] = { ...result, input: input.value, ts: Date.now() };
-    store.saveProgress(t, { answers: state.answers, updated: Date.now() }); renderPractice(t);
+    const result = state.mode === 'shadow'
+      ? { status: 'ok', label: 'Shadowed', message: 'Repeated aloud, then checked the meaning.' }
+      : scoreAnswer(input.value, exerciseAnswer(ex), prefs());
+    state.answers[i] = { ...result, input: state.mode === 'shadow' ? '[shadow]' : input.value, ts: Date.now() };
+    store.saveProgress(t, { answers: state.answers, updated: Date.now() });
+    if (prefs().autoplay) speak(ex.fr, 'fr-FR');
+    renderPractice(t);
   }
-  const promptText = state.mode === 'listen' ? 'Listen first, then reconstruct the French.' : ex.en;
+  const promptText = state.mode === 'listen' ? 'Listen first, then type the French you hear.' : state.mode === 'shadow' ? 'Listen and repeat the French aloud.' : ex.en;
+  const audioButtons = state.mode === 'listen' || state.mode === 'shadow'
+    ? [button('Hear FR', { class: 'primary', onclick: () => speak(ex.fr, 'fr-FR') })]
+    : [button('Hear EN', { class: 'secondary', onclick: () => speak(ex.en, 'en-GB') }), button('Hear FR', { class: 'secondary', onclick: () => speak(ex.fr, 'fr-FR') })];
+  const controls = state.mode === 'shadow'
+    ? el('div', { class: 'toolbar' }, [button('Reveal meaning', { class: 'primary', onclick: reveal })])
+    : el('div', { class: 'input-row' }, [input, canRecognize() ? button('Mic', { class: 'secondary', onclick: () => recognizeFrench(text => { input.value = text; }, () => {}) }) : null, button('Reveal', { class: 'primary', onclick: reveal })]);
+  const answerChildren = [
+    el('strong', { text: canonicalAnswer(exerciseAnswer(ex)) }),
+    state.mode === 'listen' || state.mode === 'shadow' ? el('p', { text: ex.en }) : null,
+    el('p', { class: 'hint', text: ex.hint || state.tracks[String(t)]?.context || 'Notice how this sentence reuses the track pattern.' }),
+    button(srs.has(`t${t}_${i}`) ? 'In review' : 'Review this sentence', { class: 'secondary', disabled: srs.has(`t${t}_${i}`), onclick: () => { srs.add(`t${t}_${i}`, { type: 'sentence', track: t, index: i, status: saved?.status }); renderPractice(t); } })
+  ];
   card.append(
     el('div', { class: 'prompt' }, [el('span', { text: promptText }), ex.c ? el('span', { class: 'badge', text: 'challenge' }) : null]),
-    el('div', { class: 'toolbar' }, [button('Hear FR', { class: 'secondary', onclick: () => speak(ex.fr, 'fr-FR') }), button('Hear EN', { class: 'secondary', onclick: () => speak(ex.en, 'en-GB') })]),
-    state.mode === 'shadow' ? el('p', { class: 'hint', text: 'Repeat aloud before revealing. Browser speech recognition is optional and not required.' }) : el('div', { class: 'input-row' }, [input, canRecognize() ? button('Mic', { class: 'secondary', onclick: () => recognizeFrench(text => { input.value = text; }, () => {}) }) : null, button('Reveal', { class: 'primary', onclick: reveal })]),
+    el('div', { class: 'toolbar' }, audioButtons),
+    state.mode === 'shadow' ? el('p', { class: 'hint', text: 'Say it before revealing. This mode records completion, not spelling accuracy.' }) : null,
+    controls,
     feedback,
-    el('div', { class: 'answer' }, [el('strong', { text: ex.fr }), el('p', { class: 'hint', text: ex.hint || state.tracks[String(t)]?.context || 'Notice how this sentence reuses the track pattern.' }), button(srs.has(`t${t}_${i}`) ? 'In deck' : 'Add this card', { class: 'secondary', disabled: srs.has(`t${t}_${i}`), onclick: () => { srs.add(`t${t}_${i}`, { track: t, index: i, status: saved?.status }); renderPractice(t); } })])
+    el('div', { class: 'answer' }, answerChildren)
   );
-  if (revealed && prefs().autoplay) setTimeout(() => speak(ex.fr, 'fr-FR'), 50);
   return card;
 }
 function completionPanel(t, exercises) {
@@ -121,17 +163,17 @@ function completionPanel(t, exercises) {
 function renderReview() {
   const due = srs.due(); if (!due.length) return screen(el('div', { class: 'hero' }, [el('h1', { text: 'No cards due' }), navButton('Back home', '/', { class: 'primary' })]));
   state.review ||= { cards: due, pos: 0, again: [] }; const id = state.review.cards[state.review.pos]; if (!id) { state.review = null; return renderReview(); }
-  const [t,i] = parseCardId(id); const ex = state.exercises[String(t)]?.[i];
-  let revealed = false; const answer = el('div', { class: 'answer' }, [el('strong', { text: ex.fr }), el('p', { class: 'hint', text: ex.en })]); const card = el('article', { class: 'review-card' });
+  const details = reviewDetails(id);
+  let revealed = false; const answer = el('div', { class: 'answer' }, [details.answerHtml ? el('div', { html: details.answerHtml }) : el('strong', { text: details.answer }), details.hint ? el('p', { class: 'hint', text: details.hint }) : null]); const card = el('article', { class: 'review-card' });
   const reveal = () => { revealed = true; card.classList.add('revealed'); };
   const grade = g => { srs.grade(id, g); if (g <= 1) state.review.cards.push(id); state.review.pos += 1; renderReview(); };
-  card.append(el('span', { class: 'track-num', text: `Track ${t}` }), el('p', { class: 'prompt', text: ex.en }), button('Reveal answer', { class: 'primary', onclick: reveal }), answer, el('div', { class: 'review-buttons' }, [button('Again', { class: 'danger', onclick: () => grade(1) }), button('Good', { class: 'secondary', onclick: () => grade(3) }), button('Easy', { class: 'secondary', onclick: () => grade(4) })]));
+  card.append(el('span', { class: 'track-num', text: details.meta }), el('p', { class: 'prompt', text: details.prompt }), button('Reveal', { class: 'primary', onclick: reveal }), answer, el('div', { class: 'review-buttons' }, [button('Again', { class: 'danger', onclick: () => grade(1) }), button('Good', { class: 'secondary', onclick: () => grade(3) }), button('Easy', { class: 'secondary', onclick: () => grade(4) })]));
   screen(el('div', { class: 'toolbar' }, [navButton('← Home', '/', { class: 'secondary' }), el('span', { class: 'muted', text: `${state.review.pos + 1} / ${state.review.cards.length}` })]), card);
 }
 
 function renderDeck() {
   setStatus('Deck'); const { deck, cards } = srs.all(); const stats = srs.stats();
-  screen(el('div', { class: 'toolbar' }, [navButton('← Home', '/', { class: 'secondary' }), stats.due ? navButton(`Review ${stats.due}`, '/review', { class: 'primary' }) : null]), el('h1', { class: 'lesson-title', text: 'Memorization deck' }), el('p', { class: 'muted', text: 'Use this lightly: the main learning path is guided transfer. Add cards for patterns you want to revisit.' }), el('div', { class: 'deck-list' }, deck.map(id => { const [t,i]=parseCardId(id); const ex=state.exercises[String(t)]?.[i]; return el('article', { class: 'deck-card' }, [el('div', { class: 'deck-meta', text: `Track ${t} · due ${cards[id]?.due || 'today'}` }), el('strong', { text: ex?.fr || id }), el('p', { text: ex?.en || 'Missing exercise' }), button('Remove', { class: 'secondary', onclick: () => { srs.remove(id); renderDeck(); } })]); })));
+  screen(el('div', { class: 'toolbar' }, [navButton('← Home', '/', { class: 'secondary' }), stats.due ? navButton(`Review ${stats.due}`, '/review', { class: 'primary' }) : null]), el('h1', { class: 'lesson-title', text: 'Pattern review' }), el('p', { class: 'muted', text: 'Use review to revisit transfer patterns and trouble spots, not to memorize the course sentence by sentence.' }), el('div', { class: 'deck-list' }, deck.map(id => { const details = reviewDetails(id); return el('article', { class: 'deck-card' }, [el('div', { class: 'deck-meta', text: `${details.meta} · due ${cards[id]?.due || 'today'}` }), el('strong', { text: details.answerHtml ? details.prompt : details.answer }), el('p', { text: details.answerHtml ? details.hint : details.prompt }), button('Remove', { class: 'secondary', onclick: () => { srs.remove(id); renderDeck(); } })]); })));
 }
 function renderResults(t) { const h = store.getHistory(t); screen(el('div', { class: 'toolbar' }, [navButton('← Lesson', `/track/${t}`, { class: 'secondary' })]), el('h1', { class: 'lesson-title', text: `History: Track ${t}` }), h.length ? el('div', { class: 'deck-list' }, h.map(a => el('article', { class: 'deck-card' }, [el('strong', { text: `${a.pct}%` }), el('p', { class: 'muted', text: new Date(a.ts).toLocaleString() })]))) : el('p', { class: 'muted', text: 'No saved attempts yet.' })); }
 function renderNotFound(){ screen(el('div', { class: 'hero' }, [el('h1', { text: 'Not found' }), navButton('Back home', '/', { class: 'primary' })])); }
@@ -143,7 +185,7 @@ function wireGlobalEvents() {
   byId('settings-open').addEventListener('click', openSettings); byId('settings-close').addEventListener('click', closeSettings); byId('settings-modal').addEventListener('click', e => { if (e.target.id === 'settings-modal') closeSettings(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSettings(); });
   byId('export-progress').addEventListener('click', () => { const blob = new Blob([store.export()], { type: 'application/json' }); const a = el('a', { href: URL.createObjectURL(blob), download: 'lt-french-progress.json' }); a.click(); URL.revokeObjectURL(a.href); });
-  byId('import-progress').addEventListener('change', async e => { const file = e.target.files[0]; if (file && store.import(await file.text())) { closeSettings(); route(); } });
+  byId('import-progress').addEventListener('change', async e => { const file = e.target.files[0]; if (!file) return; if (store.import(await file.text())) { closeSettings(); route(); } else alert('Could not import progress. Choose a valid LT French progress JSON file.'); e.target.value = ''; });
   byId('reset-track').addEventListener('click', () => { if (confirm(`Reset Track ${state.currentTrack} in-progress answers?`)) { store.clearProgress(state.currentTrack); closeSettings(); route(); } });
   byId('reset-all').addEventListener('click', () => { if (confirm('Delete all local progress, history, and deck data?')) { store.resetAll(); closeSettings(); route(); } });
   byId('pref-autoplay').addEventListener('change', e => store.setPreference('autoplay', e.target.checked)); byId('pref-strict-accents').addEventListener('change', e => store.setPreference('strictAccents', e.target.checked));

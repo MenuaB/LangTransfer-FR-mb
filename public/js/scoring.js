@@ -3,6 +3,14 @@ export function normalize(text, { keepAccents = false } = {}) {
   const base = keepAccents ? text : stripAccents(text);
   return base.toLowerCase().replace(/[?!.,;:«»“”‘’—-]/g, '').replace(/\s+/g, ' ').trim();
 }
+export function answerOptions(answer) {
+  if (Array.isArray(answer)) return answer.filter(Boolean);
+  if (answer && typeof answer === 'object') {
+    return [answer.fr, ...(answer.answers || []), ...(answer.alternates || [])].filter(Boolean);
+  }
+  return [answer].filter(Boolean);
+}
+export function canonicalAnswer(answer) { return answerOptions(answer)[0] || ''; }
 export function levenshtein(a, b) {
   if (!a.length) return b.length; if (!b.length) return a.length;
   const prev = Array.from({ length: b.length + 1 }, (_, i) => i);
@@ -22,19 +30,24 @@ function missingSmallWord(input, answer) {
 }
 export function scoreAnswer(input, answer, prefs = {}) {
   const raw = input.trim(); if (!raw) return { status: 'skip', label: 'Skipped', message: 'Try producing an answer before revealing.' };
-  const exact = raw === answer;
+  const options = answerOptions(answer);
+  const canonical = canonicalAnswer(answer);
+  const exact = options.some(option => raw === option);
   if (exact) return { status: 'ok', label: 'Correct', message: 'Exact match.' };
-  const accentlessInput = normalize(input); const accentlessAnswer = normalize(answer);
-  const accentedInput = normalize(input, { keepAccents: true }); const accentedAnswer = normalize(answer, { keepAccents: true });
-  if (accentlessInput === accentlessAnswer && accentedInput !== accentedAnswer) {
+  const accentlessInput = normalize(input);
+  const accentedInput = normalize(input, { keepAccents: true });
+  const accentlessMatch = options.find(option => normalize(option) === accentlessInput);
+  const accentedMatch = options.find(option => normalize(option, { keepAccents: true }) === accentedInput);
+  if (accentlessMatch && !accentedMatch) {
     return { status: prefs.strictAccents ? 'bad' : 'near', label: 'Accent issue', message: 'Meaning is right, but check the accents.' };
   }
-  if (accentlessInput === accentlessAnswer) return { status: 'ok', label: 'Correct', message: 'Punctuation/capitalization ignored.' };
-  if (sameTokenBag(input, answer)) return { status: 'bad', label: 'Word order', message: 'The words are right, but French word order is part of the pattern.' };
-  const missing = missingSmallWord(input, answer);
+  if (accentedMatch || accentlessMatch) return { status: 'ok', label: 'Correct', message: 'Punctuation/capitalization ignored.' };
+  if (options.some(option => sameTokenBag(input, option))) return { status: 'bad', label: 'Word order', message: 'The words are right, but French word order is part of the pattern.' };
+  const missing = missingSmallWord(input, canonical);
   if (missing) return { status: 'bad', label: 'Missing structure word', message: `Check the small word “${missing}”; articles and pronouns matter in French.` };
-  const dist = levenshtein(accentlessInput, accentlessAnswer);
-  if (dist <= Math.max(2, Math.floor(accentlessAnswer.length * 0.06))) return { status: 'near', label: 'Small typo', message: 'Very close. Compare the spelling carefully.' };
-  if (dist <= Math.max(6, Math.floor(accentlessAnswer.length * 0.14))) return { status: 'near', label: 'Close', message: 'The structure is close, but compare each phrase.' };
+  const nearest = options.map(option => normalize(option)).sort((a, b) => levenshtein(accentlessInput, a) - levenshtein(accentlessInput, b))[0] || canonical;
+  const dist = levenshtein(accentlessInput, nearest);
+  if (dist <= Math.max(2, Math.floor(nearest.length * 0.06))) return { status: 'near', label: 'Small typo', message: 'Very close. Compare the spelling carefully.' };
+  if (dist <= Math.max(6, Math.floor(nearest.length * 0.14))) return { status: 'near', label: 'Close', message: 'The structure is close, but compare each phrase.' };
   return { status: 'bad', label: 'Needs work', message: 'Reveal, think through the pattern, then try a variation.' };
 }

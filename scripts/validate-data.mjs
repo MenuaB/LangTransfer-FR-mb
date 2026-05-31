@@ -18,6 +18,7 @@ for (const id of trackIds) {
   assert(track.context.trim(), `Track ${id} context cannot be empty.`);
   assert.equal(typeof track.grammar, 'string', `Track ${id} needs grammar.`);
   assert(track.grammar.trim(), `Track ${id} grammar cannot be empty.`);
+  assert(!/<(?!\/?(em|strong|b|i|br)\b)[^>]+>/i.test(track.grammar), `Track ${id} grammar contains unsupported HTML.`);
   assert(Array.isArray(track.words) && track.words.length > 0, `Track ${id} needs words.`);
   assert(Array.isArray(track.sentences) && track.sentences.length > 0, `Track ${id} needs sentences.`);
   for (const [idx, pair] of track.words.entries()) {
@@ -28,15 +29,26 @@ for (const id of trackIds) {
   }
   assert(Array.isArray(exercises[id]) && exercises[id].length >= 8, `Track ${id} needs at least 8 exercises.`);
   const seen = new Set();
+  let challengeCount = 0;
   for (const [idx, ex] of exercises[id].entries()) {
     assert.equal(typeof ex.en, 'string', `Exercise ${id}.${idx} needs English prompt.`);
     assert.equal(typeof ex.fr, 'string', `Exercise ${id}.${idx} needs French answer.`);
     assert(ex.en.trim() && ex.fr.trim(), `Exercise ${id}.${idx} cannot contain empty prompts.`);
     assert(!seen.has(ex.fr), `Track ${id} has duplicate French answer: ${ex.fr}`);
     seen.add(ex.fr);
-    if ('c' in ex) assert.equal(typeof ex.c, 'boolean', `Exercise ${id}.${idx} c must be boolean.`);
+    if ('c' in ex) {
+      assert.equal(typeof ex.c, 'boolean', `Exercise ${id}.${idx} c must be boolean.`);
+      if (ex.c) challengeCount += 1;
+    }
     if ('hint' in ex) assert.equal(typeof ex.hint, 'string', `Exercise ${id}.${idx} hint must be a string.`);
+    for (const key of ['answers', 'alternates']) {
+      if (key in ex) {
+        assert(Array.isArray(ex[key]), `Exercise ${id}.${idx} ${key} must be an array.`);
+        assert(ex[key].every(v => typeof v === 'string' && v.trim()), `Exercise ${id}.${idx} ${key} must contain non-empty strings.`);
+      }
+    }
   }
+  assert(challengeCount / exercises[id].length <= 0.85, `Track ${id} marks too many exercises as challenge; keep the label meaningful.`);
 }
 
 console.log(`Validated ${trackIds.length} tracks and ${trackIds.reduce((sum, id) => sum + exercises[id].length, 0)} exercises.`);
